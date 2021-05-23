@@ -15,6 +15,10 @@ public class Lesson {
     private String begin_date_pairs;
     private String end_date_pairs;
 
+    public Lesson(){
+
+    }
+
     public Lesson(String _group_name,
                   String _weekday,
                   String _pair_start_time,
