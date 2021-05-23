@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/searchFragment"
+        android:title="search"
+        android:icon="@drawable/ic_search_bottom_nav_view"/>
+
+    <item
+        android:id="@+id/scheduleFragment"
+        android:title="schedule"
+        android:icon="@drawable/ic_schedule_bottom_nav_view"/>
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:title="settings"
+        android:icon="@drawable/ic_settings_bottom_nav_view"/>
+</menu>
