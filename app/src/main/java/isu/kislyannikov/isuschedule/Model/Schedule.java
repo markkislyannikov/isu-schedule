@@ -14,9 +14,6 @@ public class Schedule {
     String hash;
     ArrayList<Lesson> lessons = new ArrayList<>();
 
-    //
-
-
     public Schedule(){
 
     }
@@ -34,6 +31,10 @@ public class Schedule {
     public void setHash(String _hash) {
 
         this.hash = _hash;
+    }
+
+    public void downloadSchedule(){
+
     }
 
     public void isChanged() throws IOException, NoSuchAlgorithmException {

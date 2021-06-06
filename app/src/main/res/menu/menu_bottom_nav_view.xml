@@ -2,17 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/searchFragment"
-        android:title="search"
+        android:id="@+id/searchActivity"
+        android:title="поиск"
         android:icon="@drawable/ic_search_bottom_nav_view"/>
 
     <item
-        android:id="@+id/scheduleFragment"
-        android:title="schedule"
+        android:id="@+id/scheduleActivity"
+        android:title="расписание"
         android:icon="@drawable/ic_schedule_bottom_nav_view"/>
 
     <item
-        android:id="@+id/settingsFragment"
-        android:title="settings"
+        android:id="@+id/selectedActivity"
+        android:title="избранное"
         android:icon="@drawable/ic_settings_bottom_nav_view"/>
+
+    <item
+        android:id="@+id/settingsActivity"
+        android:title="настройки"
+        android:icon="@drawable/ic_selected_bottom_nav_view"/>
+
 </menu>
