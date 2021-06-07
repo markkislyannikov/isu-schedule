@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:layout_centerInParent="true"
+        android:id="@+id/mainTextView"
+        />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
         android:layout_width="match_parent"

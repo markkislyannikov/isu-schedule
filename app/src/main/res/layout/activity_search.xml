@@ -6,13 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="search"
-        android:textSize="20sp"
-        android:layout_centerInParent="true"
+        android:background="@color/isu_blue"
+        android:queryHint="Поиск" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewSearch"
+        android:layout_below="@+id/searchView"
+
         />
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

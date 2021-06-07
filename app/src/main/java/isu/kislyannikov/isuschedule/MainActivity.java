@@ -2,15 +2,15 @@ package isu.kislyannikov.isuschedule;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,39 +27,67 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import isu.kislyannikov.isuschedule.Metods.DownloadSchedule;
 import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.Schedule;
 
 public class MainActivity extends AppCompatActivity {
+    String LOG_TAG = "<MAIN_ACTIVITY> ->>>>>>";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //getSchedule();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
-        bottomNavigationView.setSelectedItemId(R.id.scheduleActivity);
+
+        TextView textView = (TextView)findViewById(R.id.mainTextView);
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+
+        System.out.println(extras==null);
+
+        setBottomNavigationView(bottomNavigationView);
+
+        if(extras!=null && extras.containsKey("ANIMAL")) {
+            String animal = (String) getIntent().getSerializableExtra("ANIMAL");
+            textView.setText(animal);
+            bottomNavigationView.setVisibility(View.GONE);
+
+        }
+        else {
+            textView.setText("жирная живность");
+            Log.d(LOG_TAG,"bottomNavigationView");
+        }
+
+
+
+
+       // getSchedule();
+    }
+
+    private void setBottomNavigationView(BottomNavigationView bottomNavigationView){
+        //bottomNavigationView = findViewById(R.id.bottomNavView);
+        bottomNavigationView.setSelectedItemId(R.id.scheduleItemActivity);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.searchActivity:
+                    case R.id.searchItemActivity:
                         startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.scheduleActivity:
+                    case R.id.scheduleItemActivity:
                         return true;
 
-                    case R.id.selectedActivity:
+                    case R.id.selectedItemActivity:
                         startActivity(new Intent(getApplicationContext(), SelectedActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
-
-                    case R.id.settingsActivity:
+                    case R.id.settingsItemActivity:
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                         overridePendingTransition(0,0);
                         return true;
@@ -67,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-       // getSchedule();
     }
 
 

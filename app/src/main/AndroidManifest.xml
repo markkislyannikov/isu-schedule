@@ -15,10 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ISUSchedule"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SelectedActivity"></activity>
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".SelectedActivity"
+            android:label="Избранное" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Настройки"
+            />
+        <activity
+            android:name=".SearchActivity"
+            android:label="Поиск"></activity>
+        <activity android:name=".MainActivity"
+            android:label=""
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

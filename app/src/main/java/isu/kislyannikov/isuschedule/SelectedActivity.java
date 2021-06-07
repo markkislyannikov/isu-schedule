@@ -18,26 +18,26 @@ public class SelectedActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
 
-        bottomNavigationView.setSelectedItemId(R.id.selectedActivity);
+        bottomNavigationView.setSelectedItemId(R.id.selectedItemActivity);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.searchActivity:
+                    case R.id.searchItemActivity:
                         startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.scheduleActivity:
+                    case R.id.scheduleItemActivity:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.selectedActivity:
+                    case R.id.selectedItemActivity:
                         return true;
 
-                    case R.id.settingsActivity:
+                    case R.id.settingsItemActivity:
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                         overridePendingTransition(0,0);
                         return true;
