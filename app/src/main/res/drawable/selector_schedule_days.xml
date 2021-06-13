@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_activated="true"
+        android:state_selected="true"
+        android:color="@color/white"
+        android:drawable="@drawable/rectangle_selectday_schedule"
+        />
+
+    <item
+        android:state_activated="true"
+        android:state_selected="false"
+        android:color="@color/isu_blue"
+        android:drawable="@drawable/rectangle_currentday_schedule"
+        />
+
+    <item
+        android:state_activated="false"
+        android:state_selected="true"
+        android:color="@color/white"
+        android:drawable="@drawable/rectangle_selectday_schedule"
+        />
+
+    <item
+        android:state_activated="false"
+        android:state_selected="false"
+        android:color="@color/inactiveSchedule"
+        android:drawable="@drawable/rectangle_otherday_schedule"
+        />
+
+</selector>

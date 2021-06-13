@@ -7,6 +7,7 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="inactiveSchedule">#9C9C9C</color>
     <color name="white">#FFFFFFFF</color>
     <color name="isu_blue">#405BAA</color>
     <color name="bottom_nav_white_inactive">#C2FFFFFF</color>

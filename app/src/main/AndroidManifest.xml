@@ -27,7 +27,7 @@
             android:label="Поиск" />
         <activity
             android:name=".Activity.MainActivity"
-            android:label="">
+            android:label="Расписание">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

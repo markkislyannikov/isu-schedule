@@ -20,5 +20,4 @@
         android:id="@+id/settingsItemActivity"
         android:title="настройки"
         android:icon="@drawable/ic_settings_bottom_nav_view"/>
-
 </menu>

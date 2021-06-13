@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -35,19 +36,21 @@ import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.Schedule;
 import isu.kislyannikov.isuschedule.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     String LOG_TAG = "<MAIN_ACTIVITY> ->>>>>>";
     String settings = "SETTINGS";
     String firstUse = "FIRST_USE";
     String mySchedule = "MYSCHEDULE";
     String myFavorites= "MYFAVORITES";
     SharedPreferences sharedPreferences;
+    ArrayList<TextView> textViewList;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         getSchedule();
 
@@ -57,45 +60,82 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        int day = 2;
+        textViewList = new ArrayList<>();
+        textViewList.add(findViewById(R.id.monday_number));
+        textViewList.add(findViewById(R.id.tuesday_number));
+        textViewList.add(findViewById(R.id.wednesday_number));
+        textViewList.add(findViewById(R.id.thursday_number));
+        textViewList.add(findViewById(R.id.friday_number));
+        textViewList.add(findViewById(R.id.saturday_number));
+
+        for(int i=0; i<textViewList.size(); i++){
+            textViewList.get(i).setSelected(false);
+            textViewList.get(i).setActivated(false);
+            if(i==day-1){
+//                тут будет загрузка раписания в list
+                textViewList.get(i).setActivated(true);
+                textViewList.get(i).setSelected(true);
+            }
+
+            textViewList.get(i).setOnClickListener(this);
+
+        }
+
+
 
         Log.d(LOG_TAG,"Create");
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
-
-        TextView textView = (TextView)findViewById(R.id.mainTextView);
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-
-        //System.out.println(extras==null);
-
         setBottomNavigationView(bottomNavigationView);
 
-        if(extras!=null && extras.containsKey("ANIMAL")) {
-            String animal = (String) getIntent().getSerializableExtra("ANIMAL");
-            //textView.setText(animal);
-            bottomNavigationView.setVisibility(View.GONE);
-
-        }
-        else {
-            textView.setText("жирная живность");
-            //Log.d(LOG_TAG,"bottomNavigationView");
-        }
-
-//        Set<String> keys = new TreeSet<>();
-//        SharedPreferences sharedPreferences = getSharedPreferences("MY_SCHEDULE", MODE_PRIVATE);
-//        keys = sharedPreferences.getStringSet("MY_SCHEDULE_KEY",keys);
-
-        getSharedPreferences("1", Context.MODE_PRIVATE);
-        textView.setText(String.valueOf(sharedPreferences.getString("2","")));
-        //if (sharedPreferences.contains("2")) {
-        System.out.println("yes it have");
-        String elem = sharedPreferences.getString("2","");
-        System.out.println(sharedPreferences.getString("2",""));
-        //textView.setText(elem);
-        Log.d(LOG_TAG,sharedPreferences.getString("2",""));
-        //}
-
     }
+
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        
+    }
+
+    public void onClick(View view) {
+        int day=7;
+        System.out.println("click");
+        switch(view.getId()){
+            case R.id.monday_number:
+                day=0;
+                break;
+            case R.id.tuesday_number:
+                day=1;
+                break;
+            case R.id.wednesday_number:
+                day=2;
+                break;
+            case R.id.thursday_number:
+                day=3;
+                break;
+            case R.id.friday_number:
+                day=4;
+                break;
+            case R.id.saturday_number:
+                day=5;
+                break;
+        }
+
+        for(int i=0; i<textViewList.size(); i++){
+            if(day==i){
+                textViewList.get(i).setSelected(true);
+                //подгрузка нужного раписания
+            }
+            else{
+                textViewList.get(i).setSelected(false);
+            }
+        }
+    }
+
+
+
 
     private void setBottomNavigationView(BottomNavigationView bottomNavigationView){
         //bottomNavigationView = findViewById(R.id.bottomNavView);
@@ -238,8 +278,12 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+
+
     private boolean isFirstUse(){
         this.sharedPreferences = getSharedPreferences(this.settings,Context.MODE_PRIVATE);
         return sharedPreferences.contains(this.firstUse);
     }
+
+
 }

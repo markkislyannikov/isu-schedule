@@ -7,18 +7,17 @@
     tools:context=".Activity.SearchActivity">
 
 
-
-        <SearchView
-            android:theme="@style/Theme.ISUSchedule.Search"
-            android:background="@color/isu_blue"
-            android:id="@+id/searchView"
-            android:queryBackground="@color/zeroColor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:iconifiedByDefault="false"
-            android:queryHint="Поиск..."
-             >
-        </SearchView>
+    <SearchView
+        android:theme="@style/Theme.ISUSchedule.Search"
+        android:background="@color/isu_blue"
+        android:id="@+id/searchView"
+        android:queryBackground="@color/zeroColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:queryHint="Поиск..."
+         >
+    </SearchView>
 
     <ListView
         android:id="@+id/listViewSearch"
