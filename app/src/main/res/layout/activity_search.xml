@@ -4,23 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    tools:context=".Activity.SearchActivity">
 
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/isu_blue"
-        android:queryHint="Поиск" />
+
+
+        <SearchView
+            android:theme="@style/Theme.ISUSchedule.Search"
+            android:background="@color/isu_blue"
+            android:id="@+id/searchView"
+            android:queryBackground="@color/zeroColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:queryHint="Поиск..."
+             >
+        </SearchView>
 
     <ListView
+        android:id="@+id/listViewSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewSearch"
+        android:layout_above="@id/bottomNavView"
         android:layout_below="@+id/searchView"
-
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="16dp"
+        android:padding="0dp"
+        android:scrollbars="none"
         />
-
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

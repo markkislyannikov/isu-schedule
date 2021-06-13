@@ -1,11 +1,11 @@
-package isu.kislyannikov.isuschedule;
+package isu.kislyannikov.isuschedule.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.Navigation;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,6 +19,8 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,45 +28,73 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 
 import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.Schedule;
+import isu.kislyannikov.isuschedule.R;
 
 public class MainActivity extends AppCompatActivity {
     String LOG_TAG = "<MAIN_ACTIVITY> ->>>>>>";
-
+    String settings = "SETTINGS";
+    String firstUse = "FIRST_USE";
+    String mySchedule = "MYSCHEDULE";
+    String myFavorites= "MYFAVORITES";
+    SharedPreferences sharedPreferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //getSchedule();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSchedule();
+
+        if(isFirstUse()){
+            Intent intent = new Intent(MainActivity.this, StartActivtity.class);
+            getSchedule();
+            startActivity(intent);
+        }
+
+
+        Log.d(LOG_TAG,"Create");
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
 
         TextView textView = (TextView)findViewById(R.id.mainTextView);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        System.out.println(extras==null);
+        //System.out.println(extras==null);
 
         setBottomNavigationView(bottomNavigationView);
 
         if(extras!=null && extras.containsKey("ANIMAL")) {
             String animal = (String) getIntent().getSerializableExtra("ANIMAL");
-            textView.setText(animal);
+            //textView.setText(animal);
             bottomNavigationView.setVisibility(View.GONE);
 
         }
         else {
             textView.setText("жирная живность");
-            Log.d(LOG_TAG,"bottomNavigationView");
+            //Log.d(LOG_TAG,"bottomNavigationView");
         }
 
+//        Set<String> keys = new TreeSet<>();
+//        SharedPreferences sharedPreferences = getSharedPreferences("MY_SCHEDULE", MODE_PRIVATE);
+//        keys = sharedPreferences.getStringSet("MY_SCHEDULE_KEY",keys);
 
+        getSharedPreferences("1", Context.MODE_PRIVATE);
+        textView.setText(String.valueOf(sharedPreferences.getString("2","")));
+        //if (sharedPreferences.contains("2")) {
+        System.out.println("yes it have");
+        String elem = sharedPreferences.getString("2","");
+        System.out.println(sharedPreferences.getString("2",""));
+        //textView.setText(elem);
+        Log.d(LOG_TAG,sharedPreferences.getString("2",""));
+        //}
 
-
-       // getSchedule();
     }
 
     private void setBottomNavigationView(BottomNavigationView bottomNavigationView){
@@ -77,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.searchItemActivity:
                         startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                         overridePendingTransition(0,0);
+                        finishAfterTransition();
                         return true;
 
                     case R.id.scheduleItemActivity:
@@ -85,11 +116,13 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.selectedItemActivity:
                         startActivity(new Intent(getApplicationContext(), SelectedActivity.class));
                         overridePendingTransition(0,0);
+                        finishAfterTransition();
                         return true;
 
                     case R.id.settingsItemActivity:
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                         overridePendingTransition(0,0);
+                        finishAfterTransition();
                         return true;
                 }
                 return false;
@@ -131,12 +164,20 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
 
+//JsonReader jsonReader = new JsonReader();System.out.println(json); //System.out.println(schedule);
+    //        Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
+//        Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
+
+    //            reader= new BufferedReader(new InputStreamReader(stream));
+//            StringBuilder buf=new StringBuilder();
+//            String line;
+//            System.out.println("\n\n");
+//            while ((line=reader.readLine()) != null) {
+//                buf.append(line).append("\n");
+//            }
+    //return(buf.toString());
     public void getContent(String apiUrl) throws IOException {
         Gson gson = new Gson();
-
-//        JsonReader jsonReader = new JsonReader();
-//        Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
-//        Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
 
         BufferedReader reader=null;
         InputStream stream = null;
@@ -150,19 +191,13 @@ public class MainActivity extends AppCompatActivity {
 
             JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
             Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
+            String json = gson.toJson(lessons);
+
+
             Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
-            System.out.println(schedule);
 
             jsonReader.close();
 
-            reader= new BufferedReader(new InputStreamReader(stream));
-            StringBuilder buf=new StringBuilder();
-            String line;
-            System.out.println("\n\n");
-            while ((line=reader.readLine()) != null) {
-                buf.append(line).append("\n");
-            }
-            //return(buf.toString());
         }
         finally {
             if (reader != null) {
@@ -176,7 +211,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-//
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //Log.d(LOG_TAG,"Пауза");
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+        Log.d(LOG_TAG,"Завершён");
+    }
+
+
     public void getSchedule(){
         new Thread(new Runnable() {
             public void run() {
@@ -187,5 +236,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    private boolean isFirstUse(){
+        this.sharedPreferences = getSharedPreferences(this.settings,Context.MODE_PRIVATE);
+        return sharedPreferences.contains(this.firstUse);
     }
 }

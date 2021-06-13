@@ -1,13 +1,13 @@
-package isu.kislyannikov.isuschedule.Metods;
+package isu.kislyannikov.isuschedule.Activity;
 
-import android.os.AsyncTask;
-import android.text.PrecomputedText;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,23 +18,30 @@ import java.util.Arrays;
 
 import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.Schedule;
+import isu.kislyannikov.isuschedule.R;
 
-public class DownloadSchedule {
-    private final String API = "http://raspmath.isu.ru/getSchedule";
+public class StartActivtity extends AppCompatActivity {
 
-    public DownloadSchedule(){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start);
+        getSchedule();
+
     }
 
-
-    public void getNewContent() throws IOException {
+    public void getContentForFirstStart(String apiUrl) throws IOException {
         Gson gson = new Gson();
 
+//        JsonReader jsonReader = new JsonReader();
+//        Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
+//        Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
 
-//        BufferedReader reader=null;
+        BufferedReader reader=null;
         InputStream stream = null;
         HttpURLConnection connection = null;
         try {
-            URL url=new URL(API);
+            URL url=new URL(apiUrl);
             connection =(HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
@@ -42,11 +49,16 @@ public class DownloadSchedule {
 
             JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
             Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
+            String json = gson.toJson(lessons);
+
+
+            System.out.println(json);
             Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
-
-
-            System.out.println(schedule);
+            //System.out.println(schedule);
             jsonReader.close();
+
+
+
 
 //            reader= new BufferedReader(new InputStreamReader(stream));
 //            StringBuilder buf=new StringBuilder();
@@ -58,9 +70,9 @@ public class DownloadSchedule {
             //return(buf.toString());
         }
         finally {
-//            if (reader != null) {
-//                reader.close();
-//            }
+            if (reader != null) {
+                reader.close();
+            }
             if (stream != null) {
                 stream.close();
             }
@@ -69,7 +81,20 @@ public class DownloadSchedule {
             }
         }
     }
+
+    public void getSchedule(){
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    getContentForFirstStart("http://raspmath.isu.ru/getSchedule");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+
+
+
 }
-//        JsonReader jsonReader = new JsonReader();
-//        Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
-//        Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
