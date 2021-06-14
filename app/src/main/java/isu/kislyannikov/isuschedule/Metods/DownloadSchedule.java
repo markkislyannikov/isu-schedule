@@ -1,13 +1,8 @@
 package isu.kislyannikov.isuschedule.Metods;
 
-import android.os.AsyncTask;
-import android.text.PrecomputedText;
-
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,18 +12,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import isu.kislyannikov.isuschedule.Model.Lesson;
-import isu.kislyannikov.isuschedule.Model.Schedule;
+import isu.kislyannikov.isuschedule.Model.AllSchedule;
 
 public class DownloadSchedule {
     private final String API = "http://raspmath.isu.ru/getSchedule";
 
-    public DownloadSchedule(){
-    }
-
-
     public void getNewContent() throws IOException {
         Gson gson = new Gson();
-
 
 //        BufferedReader reader=null;
         InputStream stream = null;
@@ -42,10 +32,10 @@ public class DownloadSchedule {
 
             JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
             Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
-            Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
+            //AllSchedule schedule = new AllSchedule(new ArrayList<>(Arrays.asList(lessons)));
 
 
-            System.out.println(schedule);
+            //System.out.println(schedule);
             jsonReader.close();
 
 //            reader= new BufferedReader(new InputStreamReader(stream));

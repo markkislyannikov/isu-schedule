@@ -13,11 +13,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import isu.kislyannikov.isuschedule.Model.Lesson;
-import isu.kislyannikov.isuschedule.Model.Schedule;
+
 import isu.kislyannikov.isuschedule.R;
 
 public class StartActivtity extends AppCompatActivity {
@@ -25,7 +22,7 @@ public class StartActivtity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_search);
         getSchedule();
 
     }
@@ -53,7 +50,7 @@ public class StartActivtity extends AppCompatActivity {
 
 
             System.out.println(json);
-            Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
+            //AllSchedule schedule = new AllSchedule(new ArrayList<>(Arrays.asList(lessons)));
             //System.out.println(schedule);
             jsonReader.close();
 

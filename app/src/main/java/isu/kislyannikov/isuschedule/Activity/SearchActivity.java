@@ -125,11 +125,11 @@ public class SearchActivity extends Activity {
                         finishAfterTransition();
                         return true;
 
-                    case R.id.settingsItemActivity:
-                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                        overridePendingTransition(0, 0);
-                        finishAfterTransition();
-                        return true;
+//                    case R.id.settingsItemActivity:
+//                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+//                        overridePendingTransition(0, 0);
+//                        finishAfterTransition();
+//                        return true;
                 }
                 return false;
             }

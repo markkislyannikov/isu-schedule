@@ -131,7 +131,6 @@
             android:background="@drawable/selector_schedule_days"
             android:gravity="center"
             android:text="Сб\n19" />
-
     </LinearLayout>
 
 

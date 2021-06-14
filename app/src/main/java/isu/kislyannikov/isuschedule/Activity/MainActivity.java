@@ -12,29 +12,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+
 
 import isu.kislyannikov.isuschedule.Model.Lesson;
-import isu.kislyannikov.isuschedule.Model.Schedule;
+import isu.kislyannikov.isuschedule.Model.AllSchedule;
 import isu.kislyannikov.isuschedule.R;
+
+import static isu.kislyannikov.isuschedule.Model.AllSchedule.dayOfWeekSchedule;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     String LOG_TAG = "<MAIN_ACTIVITY> ->>>>>>";
@@ -50,17 +47,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        getFirstSchedule();
 
 
-        getSchedule();
-
-        if(isFirstUse()){
-            Intent intent = new Intent(MainActivity.this, StartActivtity.class);
-            getSchedule();
+        if(!isFirstUse()){
+            Log.d(LOG_TAG,"dont has schedule");
+            getFirstSchedule();
+            Intent intent = new Intent(MainActivity.this, FirstStartSearchActivity.class);
             startActivity(intent);
         }
 
-        int day = 2;
+
+        int dayOfWeek = dayOfWeekSchedule();
         textViewList = new ArrayList<>();
         textViewList.add(findViewById(R.id.monday_number));
         textViewList.add(findViewById(R.id.tuesday_number));
@@ -72,17 +70,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for(int i=0; i<textViewList.size(); i++){
             textViewList.get(i).setSelected(false);
             textViewList.get(i).setActivated(false);
-            if(i==day-1){
+            if(i==dayOfWeek){
 //                тут будет загрузка раписания в list
                 textViewList.get(i).setActivated(true);
                 textViewList.get(i).setSelected(true);
             }
-
             textViewList.get(i).setOnClickListener(this);
 
         }
-
-
 
         Log.d(LOG_TAG,"Create");
 
@@ -95,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
-        
     }
 
     public void onClick(View view) {
@@ -135,8 +128,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-
     private void setBottomNavigationView(BottomNavigationView bottomNavigationView){
         //bottomNavigationView = findViewById(R.id.bottomNavView);
         bottomNavigationView.setSelectedItemId(R.id.scheduleItemActivity);
@@ -159,17 +150,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         finishAfterTransition();
                         return true;
 
-                    case R.id.settingsItemActivity:
-                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                        overridePendingTransition(0,0);
-                        finishAfterTransition();
-                        return true;
+//                    case R.id.settingsItemActivity:
+//                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+//                        overridePendingTransition(0,0);
+//                        finishAfterTransition();
+//                        return true;
                 }
                 return false;
             }
         });
     }
 
+    public void getContent(String apiUrl) throws IOException {
+        Gson gson = new Gson();
+
+        BufferedReader reader=null;
+        InputStream stream = null;
+        HttpURLConnection connection = null;
+        try {
+            URL url=new URL(apiUrl);
+            connection =(HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            stream = connection.getInputStream();
+
+            JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
+            Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
+
+            String json = gson.toJson(lessons);
+
+            OutputStream outputStream = openFileOutput("JSON", Context.MODE_PRIVATE);
+            try (OutputStreamWriter osw = new OutputStreamWriter(outputStream)) {
+                osw.write(json);
+                osw.close();
+            }
+            jsonReader.close();
+
+        }
+        finally {
+            if (reader != null) {
+                reader.close();
+            }
+            if (stream != null) {
+                stream.close();
+            }
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    public void getFirstSchedule(){
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    getContent("http://raspmath.isu.ru/getSchedule");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
 
 //    private void getContent() throws IOException {
@@ -216,41 +257,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                buf.append(line).append("\n");
 //            }
     //return(buf.toString());
-    public void getContent(String apiUrl) throws IOException {
-        Gson gson = new Gson();
-
-        BufferedReader reader=null;
-        InputStream stream = null;
-        HttpURLConnection connection = null;
-        try {
-            URL url=new URL(apiUrl);
-            connection =(HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
-            stream = connection.getInputStream();
-
-            JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
-            Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
-            String json = gson.toJson(lessons);
-
-
-            Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
-
-            jsonReader.close();
-
-        }
-        finally {
-            if (reader != null) {
-                reader.close();
-            }
-            if (stream != null) {
-                stream.close();
-            }
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-    }
+//    public void getContent(String apiUrl) throws IOException {
+//        Gson gson = new Gson();
+//
+//        BufferedReader reader=null;
+//        InputStream stream = null;
+//        HttpURLConnection connection = null;
+//        try {
+//            URL url=new URL(apiUrl);
+//            connection =(HttpURLConnection) url.openConnection();
+//            connection.setRequestMethod("GET");
+//            connection.connect();
+//            stream = connection.getInputStream();
+//
+//            JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
+//            Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
+//            String json = gson.toJson(lessons);
+//
+//
+//            //AllSchedule schedule = new AllSchedule(new ArrayList<>(Arrays.asList(lessons)));
+//
+//            jsonReader.close();
+//
+//        }
+//        finally {
+//            if (reader != null) {
+//                reader.close();
+//            }
+//            if (stream != null) {
+//                stream.close();
+//            }
+//            if (connection != null) {
+//                connection.disconnect();
+//            }
+//        }
+//    }
 
     @Override
     protected void onPause() {
@@ -266,17 +307,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void getSchedule(){
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    getContent("http://raspmath.isu.ru/getSchedule");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
+//    public void getSchedule(){
+//        new Thread(new Runnable() {
+//            public void run() {
+//                try {
+//                    getContent("http://raspmath.isu.ru/getSchedule");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//    }
 
 
 

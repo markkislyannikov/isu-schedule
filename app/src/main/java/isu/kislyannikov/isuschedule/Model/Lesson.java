@@ -1,19 +1,19 @@
 package isu.kislyannikov.isuschedule.Model;
 
 public class Lesson {
-    private String group_name;
-    private String weekday;
-    private String pair_start_time;
-    private String pair_end_time;
-    private String subject_name;
-    private String pair_type;
-    private String lastname;
-    private String firstname;
-    private String patronymic;
-    private String class_name;
-    private String week_type;
-    private String begin_date_pairs;
-    private String end_date_pairs;
+    public String group_name;
+    public String weekday;
+    public String pair_start_time;
+    public String pair_end_time;
+    public String subject_name;
+    public String pair_type;
+    public String lastname;
+    public String firstname;
+    public String patronymic;
+    public String class_name;
+    public String week_type;
+    public String begin_date_pairs;
+    public String end_date_pairs;
 
     public Lesson(){
 
@@ -76,6 +76,110 @@ public class Lesson {
                 begin_date_pairs,
                 end_date_pairs);
         return output;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getWeekday() {
+        return weekday;
+    }
+
+    public void setWeekday(String weekday) {
+        this.weekday = weekday;
+    }
+
+    public String getPair_start_time() {
+        return pair_start_time;
+    }
+
+    public void setPair_start_time(String pair_start_time) {
+        this.pair_start_time = pair_start_time;
+    }
+
+    public String getPair_end_time() {
+        return pair_end_time;
+    }
+
+    public void setPair_end_time(String pair_end_time) {
+        this.pair_end_time = pair_end_time;
+    }
+
+    public String getSubject_name() {
+        return subject_name;
+    }
+
+    public void setSubject_name(String subject_name) {
+        this.subject_name = subject_name;
+    }
+
+    public String getPair_type() {
+        return pair_type;
+    }
+
+    public void setPair_type(String pair_type) {
+        this.pair_type = pair_type;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getPatronymic() {
+        return patronymic;
+    }
+
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
+    }
+
+    public String getClass_name() {
+        return class_name;
+    }
+
+    public void setClass_name(String class_name) {
+        this.class_name = class_name;
+    }
+
+    public String getWeek_type() {
+        return week_type;
+    }
+
+    public void setWeek_type(String week_type) {
+        this.week_type = week_type;
+    }
+
+    public String getBegin_date_pairs() {
+        return begin_date_pairs;
+    }
+
+    public void setBegin_date_pairs(String begin_date_pairs) {
+        this.begin_date_pairs = begin_date_pairs;
+    }
+
+    public String getEnd_date_pairs() {
+        return end_date_pairs;
+    }
+
+    public void setEnd_date_pairs(String end_date_pairs) {
+        this.end_date_pairs = end_date_pairs;
     }
 }
 

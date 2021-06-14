@@ -54,10 +54,10 @@ public class SelectedActivity extends AppCompatActivity {
                     case R.id.selectedItemActivity:
                         return true;
 
-                    case R.id.settingsItemActivity:
-                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                        overridePendingTransition(0,0);
-                        return true;
+//                    case R.id.settingsItemActivity:
+//                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+//                        overridePendingTransition(0,0);
+//                        return true;
                 }
                 return false;
             }
