@@ -115,14 +115,12 @@ public class SearchActivity extends Activity {
                     case R.id.scheduleItemActivity:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0, 0);
-                        finishAfterTransition();
                         return true;
 
 
                     case R.id.selectedItemActivity:
                         startActivity(new Intent(getApplicationContext(), SelectedActivity.class));
                         overridePendingTransition(0, 0);
-                        finishAfterTransition();
                         return true;
 
 //                    case R.id.settingsItemActivity:

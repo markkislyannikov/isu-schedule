@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,22 +26,24 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 
 import isu.kislyannikov.isuschedule.Model.Lesson;
-import isu.kislyannikov.isuschedule.Model.AllSchedule;
 import isu.kislyannikov.isuschedule.R;
 
 import static isu.kislyannikov.isuschedule.Model.AllSchedule.dayOfWeekSchedule;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     String LOG_TAG = "<MAIN_ACTIVITY> ->>>>>>";
-    String settings = "SETTINGS";
-    String firstUse = "FIRST_USE";
-    String mySchedule = "MYSCHEDULE";
+    String SETTINGS = "SETTINGS";
+    String FIRST_USE = "FIRST_USE";
+    String MYSCHEDULE = "MYSCHEDULE";
     String myFavorites= "MYFAVORITES";
     SharedPreferences sharedPreferences;
     ArrayList<TextView> textViewList;
+
+
 
 
     @Override
@@ -53,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(!isFirstUse()){
             Log.d(LOG_TAG,"dont has schedule");
             getFirstSchedule();
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             Intent intent = new Intent(MainActivity.this, FirstStartSearchActivity.class);
             startActivity(intent);
         }
@@ -138,16 +146,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.searchItemActivity:
                         startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                         overridePendingTransition(0,0);
-                        finishAfterTransition();
                         return true;
 
                     case R.id.scheduleItemActivity:
                         return true;
-
                     case R.id.selectedItemActivity:
                         startActivity(new Intent(getApplicationContext(), SelectedActivity.class));
                         overridePendingTransition(0,0);
-                        finishAfterTransition();
                         return true;
 
 //                    case R.id.settingsItemActivity:
@@ -179,11 +184,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             String json = gson.toJson(lessons);
 
-            OutputStream outputStream = openFileOutput("JSON", Context.MODE_PRIVATE);
-            try (OutputStreamWriter osw = new OutputStreamWriter(outputStream)) {
-                osw.write(json);
-                osw.close();
-            }
+            FileOutputStream outputStream = openFileOutput("JSON.json", Context.MODE_PRIVATE);
+            outputStream.write(json.getBytes());
+            outputStream.close();
             jsonReader.close();
 
         }
@@ -322,8 +325,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private boolean isFirstUse(){
-        this.sharedPreferences = getSharedPreferences(this.settings,Context.MODE_PRIVATE);
-        return sharedPreferences.contains(this.firstUse);
+        this.sharedPreferences = getSharedPreferences(this.SETTINGS,Context.MODE_PRIVATE);
+        return sharedPreferences.contains(this.FIRST_USE);
     }
 
 

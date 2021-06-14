@@ -17,6 +17,8 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import isu.kislyannikov.isuschedule.Model.AllSchedule;
 import isu.kislyannikov.isuschedule.Model.Lesson;
@@ -34,6 +37,8 @@ import isu.kislyannikov.isuschedule.R;
 
 public class FirstStartSearchActivity extends Activity {
     String LOG_TAG = "<FIRST_START_SEARCH_ACTIVITY> ->>>>>>";
+    String SETTINGS = "SETTINGS";
+    String FIRST_USE = "FIRST_USE";
     Gson gson = new Gson();
 
     Context _context;
@@ -50,17 +55,23 @@ public class FirstStartSearchActivity extends Activity {
         _context = this;
 
         try {
-            InputStream inputStream = openFileInput("JSON");
-            if (inputStream != null) {
-                InputStreamReader isr = new InputStreamReader(inputStream);
-                Lesson [] lessons = gson.fromJson(isr,Lesson[].class);
-                allSchedule = new AllSchedule(lessons);
-                inputStream.close();
-            }
-        } catch (Throwable t) {
-            Toast.makeText(getApplicationContext(),
-                    "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        try {
+            FileInputStream fileInputStream = openFileInput("JSON.json");
+            InputStreamReader isr = new InputStreamReader(fileInputStream);
+            Lesson [] lessons = gson.fromJson(isr,Lesson[].class);
+            allSchedule = new AllSchedule(lessons);
+            Log.d(LOG_TAG, lessons.toString());
+            isr.close();
+            fileInputStream.close();
+            } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         stringArrayListKeys = allSchedule.getKeys();
         listViewStartActivity = findViewById(R.id.listViewStartActivity);
@@ -68,18 +79,16 @@ public class FirstStartSearchActivity extends Activity {
         listViewStartActivity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Log.d(LOG_TAG, "itemClick: position =" + position + ", id = " + id);
                 String key = (String)arrayAdapter.getItem(position);
-                Log.d(LOG_TAG,"key");
-                /*try {
+                try {
+                    saveSettingsFirstStart();
                     MySchedule mySchedule = new MySchedule(_context,allSchedule.getPairsByKey(key), key);
-                } catch (NoSuchAlgorithmException e) {
+                }
+                catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
                 Intent intent = new Intent(FirstStartSearchActivity.this, MainActivity.class);
-
-                intent.putExtra("", (String) arrayAdapter.getItem(position));
-                startActivity(intent);*/
+                startActivity(intent);
             }
         });
 
@@ -100,54 +109,11 @@ public class FirstStartSearchActivity extends Activity {
         });
     }
 
-//    public void getContent(String apiUrl) throws IOException {
-//        Gson gson = new Gson();
-//
-//        BufferedReader reader=null;
-//        InputStream stream = null;
-//        HttpURLConnection connection = null;
-//        try {
-//            URL url=new URL(apiUrl);
-//            connection =(HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod("GET");
-//            connection.connect();
-//            stream = connection.getInputStream();
-//
-//            JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
-//            Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
-//            String json = gson.toJson(lessons);
-//
-//            OutputStream outputStream = openFileOutput("JSON", Context.MODE_PRIVATE);
-//            try (OutputStreamWriter osw = new OutputStreamWriter(outputStream)) {
-//                osw.write(json);
-//                osw.close();
-//            }
-//            jsonReader.close();
-//
-//        }
-//        finally {
-//            if (reader != null) {
-//                reader.close();
-//            }
-//            if (stream != null) {
-//                stream.close();
-//            }
-//            if (connection != null) {
-//                connection.disconnect();
-//            }
-//        }
-//    }
-//
-//    public void getSchedule(){
-//        new Thread(new Runnable() {
-//            public void run() {
-//                try {
-//                    getContent("http://raspmath.isu.ru/getSchedule");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//    }
+    private void saveSettingsFirstStart(){
+        _context.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
+                        .edit()
+                        .putBoolean(FIRST_USE, true)
+                        .apply();
+    }
 
 }

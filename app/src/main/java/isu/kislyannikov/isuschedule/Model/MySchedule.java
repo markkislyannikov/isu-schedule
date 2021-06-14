@@ -20,6 +20,7 @@ public class MySchedule {
     String MY_SCHEDULE_DATA = "MY_SCHEDULE_DATA";
     String MY_SCHEDULE_HASH = "MY_SCHEDULE_HASH";
 
+
     //Constructor for get data in shared preferense
     public MySchedule(Context _context) {
         sharedPreferences = _context.getSharedPreferences(MY_SCHEDULE, Context.MODE_PRIVATE);
@@ -56,7 +57,6 @@ public class MySchedule {
     //Metod for check change and change schedule
     public void changeSchedule(Context _context, ArrayList<ArrayList<Pair>> _pairArrayList) throws NoSuchAlgorithmException {
 
-
         String jsonNewLessons = gson.toJson(_pairArrayList);
         if (isChangedSchedule(jsonNewLessons)) {
             arrayListPair = _pairArrayList;
@@ -70,7 +70,8 @@ public class MySchedule {
         }
     }
 
-    private void fromMassToArray(){
+    public ArrayList<ArrayList<Pair>> getMySchedule(){
+        return this.arrayListPair;
     }
 
 
