@@ -1,18 +1,14 @@
 package isu.kislyannikov.isuschedule.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
 import isu.kislyannikov.isuschedule.Model.Pair;
 import isu.kislyannikov.isuschedule.R;
 
@@ -21,29 +17,21 @@ public class ScheduleAdapter extends BaseAdapter implements Filterable {
     ArrayList<Pair>  arrayListPair;
     ArrayList<Pair> pairArrayList;
     private LayoutInflater inflater;
+    private int typeOfWeek;
 
     ArrayList<Pair> mValue;
     ValueFilter valueFilter;
 
-    public ScheduleAdapter(Context _context, ArrayList<Pair> _arrayListPair, int day){
+    public ScheduleAdapter(Context _context, ArrayList<Pair> _arrayListPair, int day, int typeOfWeek){
         this.context = _context;
         this.arrayListPair = _arrayListPair;
         mValue = new ArrayList<>();
         for(int i=0; i<arrayListPair.size(); i++){
-            if(arrayListPair.get(i).weekday==day){
+            if(arrayListPair.get(i).weekday==day && (arrayListPair.get(i).week_type==typeOfWeek || arrayListPair.get(i).week_type==2)){
                 mValue.add(arrayListPair.get(i));
             }
         }
-
-//        int count =0;
-//        for(ArrayList<Pair> pair: arrayListArrayListPair) {
-//            System.out.println("\n\n");
-//            System.out.println(count);
-//            count++;
-//            for (Pair _pair : pair) {
-//                System.out.println(_pair);
-//            }
-//        }
+        System.out.println(mValue);
     }
 
     @Override
@@ -116,7 +104,7 @@ public class ScheduleAdapter extends BaseAdapter implements Filterable {
                 int elem = Integer.parseInt(charSequence.toString());
                 ArrayList<Pair> filterList = new ArrayList<>();
                 for(int i=0; i<arrayListPair.size(); i++){
-                    if(arrayListPair.get(i).weekday==elem){
+                    if(arrayListPair.get(i).weekday==elem && (arrayListPair.get(i).week_type==typeOfWeek || arrayListPair.get(i).week_type==2)){
                         filterList.add(arrayListPair.get(i));
                     }
                 }

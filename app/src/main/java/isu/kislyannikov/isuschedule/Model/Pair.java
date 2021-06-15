@@ -13,7 +13,7 @@ public class Pair implements Serializable {
 //    private String pair_type;
     public String teachersName;
     public String class_name;
-    public String week_type;
+    public int week_type;
 
 
     public Pair(String _group_name,
@@ -61,7 +61,16 @@ public class Pair implements Serializable {
 //        this.pair_type = _pair_type.substring(0,3);
         this.teachersName = String.format("%s %s %s",_lastname, _firstname, _patronymic);
         this.class_name = _class_name;
-        this.week_type = _week_type;
+        if(_week_type.equals("верхняя")){
+            this.week_type = 0;
+        }
+        else if(_week_type.equals("нижняя")){
+            this.week_type = 1;
+        }
+        else{
+            this.week_type = 2;
+        }
+
     }
 
     public Pair(Lesson lesson){
@@ -98,7 +107,15 @@ public class Pair implements Serializable {
 //        this.pair_type = lesson.pair_type.substring(0,3);
         this.teachersName = String.format("%s %s %s",lesson.lastname, lesson.firstname, lesson.patronymic);
         this.class_name = lesson.class_name;
-        this.week_type = lesson.week_type;
+        if(lesson.week_type.equals("верхняя")){
+            this.week_type = 0;
+        }
+        else if(lesson.week_type.equals("нижняя")){
+            this.week_type = 1;
+        }
+        else{
+            this.week_type = 2;
+        }
     }
 
 
