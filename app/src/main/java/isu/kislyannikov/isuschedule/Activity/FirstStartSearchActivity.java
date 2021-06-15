@@ -63,7 +63,6 @@ public class FirstStartSearchActivity extends Activity {
         SharedPreferences sharedPreferences = _context.getSharedPreferences(ALLSCHEDULE, Context.MODE_PRIVATE);
         String json = sharedPreferences.getString(ALLSCHEDULE, "");
         lessons = gson.fromJson(json,Lesson[].class);
-
     }
 
     private void saveSettingsFirstStart() {
@@ -72,6 +71,8 @@ public class FirstStartSearchActivity extends Activity {
                 .putBoolean(FIRST_USE, true)
                 .apply();
     }
+
+
 
     @Override
     protected void onResume() {

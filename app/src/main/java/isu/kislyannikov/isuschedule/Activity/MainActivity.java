@@ -17,6 +17,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +37,7 @@ import isu.kislyannikov.isuschedule.Adapter.ScheduleAdapter;
 import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.MySchedule;
 import isu.kislyannikov.isuschedule.Model.Pair;
+import isu.kislyannikov.isuschedule.Model.TypeOfWeekJson;
 import isu.kislyannikov.isuschedule.R;
 
 import static isu.kislyannikov.isuschedule.Model.AllSchedule.dayOfWeekSchedule;
@@ -45,9 +48,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String FIRST_USE = "FIRST_USE";
     String MYSCHEDULE = "MYSCHEDULE";
     String myFavorites = "MYFAVORITES";
+    String TYPEOFWEEK = "TYPEOFWEEK";
     SharedPreferences sharedPreferences;
     MySchedule mySchedule;
     ArrayList<TextView> textViewList;
+    int typeOfWeek;
 
     ListView listView;
     ArrayList<ArrayList<Pair>> arrayListArrayListPair;
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         if (!isFirstUse()) {
+            getTypeWeekSchedule();
             getFirstSchedule();
             Log.d(LOG_TAG, "dont has schedule");
             Intent intent = new Intent(MainActivity.this, FirstStartSearchActivity.class);
@@ -71,6 +77,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             listView = findViewById(R.id.listViewMainActivity);
 
+            this.typeOfWeek = typeOfWeek();
+
+            TextView tvTypeOfWeek = findViewById(R.id.mainTextView);
+            tvTypeOfWeek.setText(String.format("%s неделя", typeOfWeek==0? "Верхняя":"Нижняя"));
+
+            ArrayList<Pair> alp = arrayListArrayListPair.get(0);
+            for(Pair p: alp){
+                System.out.println(p);
+            }
 
             int dayOfWeek = dayOfWeekSchedule();
             textViewList = new ArrayList<>();
@@ -81,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             textViewList.add(findViewById(R.id.friday_number));
             textViewList.add(findViewById(R.id.saturday_number));
 
-            scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), 5);
+            scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), dayOfWeek, this.typeOfWeek);
             listView.setAdapter(scheduleAdapter);
 
             for (int i = 0; i < textViewList.size(); i++) {
@@ -134,14 +149,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         CharSequence charSequence = Integer.toString(day);
-        scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), day);
+        scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), day, typeOfWeek);
         listView.setAdapter(scheduleAdapter);
 
         scheduleAdapter.getFilter().filter(charSequence);
         for (int i = 0; i < textViewList.size(); i++) {
             if (day == i) {
                 textViewList.get(i).setSelected(true);
-
             } else {
                 textViewList.get(i).setSelected(false);
             }
@@ -232,86 +246,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
+    public void getTypeWeekSchedule() {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Gson gson = new Gson();
+                    URL url = new URL("http://raspmath.isu.ru/getSemesterData");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.connect();
+                    InputStream stream = connection.getInputStream();
 
-//    private void getContent() throws IOException {
-//        String path = "http://raspmath.isu.ru/getSchedule";
-//        BufferedReader reader=null;
-//        InputStream stream = null;
-//        HttpURLConnection connection = null;
-//        try {
-//            URL url=new URL(path);
-//            connection =(HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod("GET");
-//            connection.connect();
-//            stream = connection.getInputStream();
-//            reader= new BufferedReader(new InputStreamReader(stream));
-//            StringBuilder buf=new StringBuilder();
-//            String line;
-//            while ((line=reader.readLine()) != null) {
-//                buf.append(line).append("\n");
-//            }
-//            System.out.println(buf.toString());
-//        }
-//        finally {
-//            if (reader != null) {
-//                reader.close();
-//            }
-//            if (stream != null) {
-//                stream.close();
-//            }
-//            if (connection != null) {
-//                connection.disconnect();
-//            }
-//        }
-//    }
+                    JsonReader jsonReader = new JsonReader(new InputStreamReader(stream));
+                    TypeOfWeekJson[] typeOfWeekJsons = gson.fromJson(jsonReader, TypeOfWeekJson[].class);
 
-//JsonReader jsonReader = new JsonReader();System.out.println(json); //System.out.println(schedule);
-    //        Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
-//        Schedule schedule = new Schedule(new ArrayList<>(Arrays.asList(lessons)));
+                    String json = gson.toJson(typeOfWeekJsons[0]);
 
-    //            reader= new BufferedReader(new InputStreamReader(stream));
-//            StringBuilder buf=new StringBuilder();
-//            String line;
-//            System.out.println("\n\n");
-//            while ((line=reader.readLine()) != null) {
-//                buf.append(line).append("\n");
-//            }
-    //return(buf.toString());
-//    public void getContent(String apiUrl) throws IOException {
-//        Gson gson = new Gson();
-//
-//        BufferedReader reader=null;
-//        InputStream stream = null;
-//        HttpURLConnection connection = null;
-//        try {
-//            URL url=new URL(apiUrl);
-//            connection =(HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod("GET");
-//            connection.connect();
-//            stream = connection.getInputStream();
-//
-//            JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
-//            Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
-//            String json = gson.toJson(lessons);
-//
-//
-//            //AllSchedule schedule = new AllSchedule(new ArrayList<>(Arrays.asList(lessons)));
-//
-//            jsonReader.close();
-//
-//        }
-//        finally {
-//            if (reader != null) {
-//                reader.close();
-//            }
-//            if (stream != null) {
-//                stream.close();
-//            }
-//            if (connection != null) {
-//                connection.disconnect();
-//            }
-//        }
-//    }
+                    getSharedPreferences("TYPEOFWEEK", Context.MODE_PRIVATE)
+                            .edit()
+                            .putString("TYPEOFWEEK", json)
+                            .apply();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     @Override
     protected void onPause() {
@@ -339,11 +300,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }).start();
 //    }
 
+    private int typeOfWeek(){
+        Gson gson = new Gson();
+        this.sharedPreferences = getSharedPreferences(TYPEOFWEEK, Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString(TYPEOFWEEK, "");
+        TypeOfWeekJson typeOfWeekJson = gson.fromJson(json,TypeOfWeekJson.class);
+        return typeOfWeekJson.typeOfWeek();
+    }
 
     private boolean isFirstUse() {
         this.sharedPreferences = getSharedPreferences(this.SETTINGS, Context.MODE_PRIVATE);
         return sharedPreferences.contains(this.FIRST_USE);
     }
-
-
 }

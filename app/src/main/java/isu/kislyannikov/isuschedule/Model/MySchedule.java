@@ -19,6 +19,7 @@ public class MySchedule {
     String MY_SCHEDULE_KEY = "MY_SCHEDULE_KEY";
     String MY_SCHEDULE_DATA = "MY_SCHEDULE_DATA";
     String MY_SCHEDULE_HASH = "MY_SCHEDULE_HASH";
+    String MY_SCHEDULE_TYPEOFDATE = "MY_SCHEDULE_TYPEOFDATE";
 
 
     //Constructor for get data in shared preferense
