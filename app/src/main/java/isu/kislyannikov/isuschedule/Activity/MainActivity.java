@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +31,10 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
+import isu.kislyannikov.isuschedule.Adapter.ScheduleAdapter;
 import isu.kislyannikov.isuschedule.Model.Lesson;
+import isu.kislyannikov.isuschedule.Model.MySchedule;
+import isu.kislyannikov.isuschedule.Model.Pair;
 import isu.kislyannikov.isuschedule.R;
 
 import static isu.kislyannikov.isuschedule.Model.AllSchedule.dayOfWeekSchedule;
@@ -39,12 +44,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String SETTINGS = "SETTINGS";
     String FIRST_USE = "FIRST_USE";
     String MYSCHEDULE = "MYSCHEDULE";
-    String myFavorites= "MYFAVORITES";
+    String myFavorites = "MYFAVORITES";
     SharedPreferences sharedPreferences;
+    MySchedule mySchedule;
     ArrayList<TextView> textViewList;
 
-
-
+    ListView listView;
+    ArrayList<ArrayList<Pair>> arrayListArrayListPair;
+    ScheduleAdapter scheduleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,45 +60,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        getFirstSchedule();
 
 
-        if(!isFirstUse()){
-            Log.d(LOG_TAG,"dont has schedule");
+        if (!isFirstUse()) {
             getFirstSchedule();
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Log.d(LOG_TAG, "dont has schedule");
             Intent intent = new Intent(MainActivity.this, FirstStartSearchActivity.class);
             startActivity(intent);
-        }
+        } else {
+            mySchedule = new MySchedule(this);
+            arrayListArrayListPair = mySchedule.getMySchedule();
+
+            listView = findViewById(R.id.listViewMainActivity);
 
 
-        int dayOfWeek = dayOfWeekSchedule();
-        textViewList = new ArrayList<>();
-        textViewList.add(findViewById(R.id.monday_number));
-        textViewList.add(findViewById(R.id.tuesday_number));
-        textViewList.add(findViewById(R.id.wednesday_number));
-        textViewList.add(findViewById(R.id.thursday_number));
-        textViewList.add(findViewById(R.id.friday_number));
-        textViewList.add(findViewById(R.id.saturday_number));
+            int dayOfWeek = dayOfWeekSchedule();
+            textViewList = new ArrayList<>();
+            textViewList.add(findViewById(R.id.monday_number));
+            textViewList.add(findViewById(R.id.tuesday_number));
+            textViewList.add(findViewById(R.id.wednesday_number));
+            textViewList.add(findViewById(R.id.thursday_number));
+            textViewList.add(findViewById(R.id.friday_number));
+            textViewList.add(findViewById(R.id.saturday_number));
 
-        for(int i=0; i<textViewList.size(); i++){
-            textViewList.get(i).setSelected(false);
-            textViewList.get(i).setActivated(false);
-            if(i==dayOfWeek){
+            scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), 5);
+            listView.setAdapter(scheduleAdapter);
+
+            for (int i = 0; i < textViewList.size(); i++) {
+                textViewList.get(i).setSelected(false);
+                textViewList.get(i).setActivated(false);
+                if (i == dayOfWeek) {
 //                тут будет загрузка раписания в list
-                textViewList.get(i).setActivated(true);
-                textViewList.get(i).setSelected(true);
+                    textViewList.get(i).setActivated(true);
+                    textViewList.get(i).setSelected(true);
+                }
+                textViewList.get(i).setOnClickListener(this);
+
             }
-            textViewList.get(i).setOnClickListener(this);
 
+            Log.d(LOG_TAG, "Create");
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
+            setBottomNavigationView(bottomNavigationView);
         }
-
-        Log.d(LOG_TAG,"Create");
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
-        setBottomNavigationView(bottomNavigationView);
-
     }
 
 
@@ -101,58 +110,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onClick(View view) {
-        int day=7;
+        int day = 7;
         System.out.println("click");
-        switch(view.getId()){
+        switch (view.getId()) {
             case R.id.monday_number:
-                day=0;
+                day = 0;
                 break;
             case R.id.tuesday_number:
-                day=1;
+                day = 1;
                 break;
             case R.id.wednesday_number:
-                day=2;
+                day = 2;
                 break;
             case R.id.thursday_number:
-                day=3;
+                day = 3;
                 break;
             case R.id.friday_number:
-                day=4;
+                day = 4;
                 break;
             case R.id.saturday_number:
-                day=5;
+                day = 5;
                 break;
         }
 
-        for(int i=0; i<textViewList.size(); i++){
-            if(day==i){
+        CharSequence charSequence = Integer.toString(day);
+        scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), day);
+        listView.setAdapter(scheduleAdapter);
+
+        scheduleAdapter.getFilter().filter(charSequence);
+        for (int i = 0; i < textViewList.size(); i++) {
+            if (day == i) {
                 textViewList.get(i).setSelected(true);
-                //подгрузка нужного раписания
-            }
-            else{
+
+            } else {
                 textViewList.get(i).setSelected(false);
             }
         }
     }
 
 
-    private void setBottomNavigationView(BottomNavigationView bottomNavigationView){
+    private void setBottomNavigationView(BottomNavigationView bottomNavigationView) {
         //bottomNavigationView = findViewById(R.id.bottomNavView);
         bottomNavigationView.setSelectedItemId(R.id.scheduleItemActivity);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.searchItemActivity:
                         startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.scheduleItemActivity:
                         return true;
                     case R.id.selectedItemActivity:
                         startActivity(new Intent(getApplicationContext(), SelectedActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
 //                    case R.id.settingsItemActivity:
@@ -169,28 +182,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void getContent(String apiUrl) throws IOException {
         Gson gson = new Gson();
 
-        BufferedReader reader=null;
+        BufferedReader reader = null;
         InputStream stream = null;
         HttpURLConnection connection = null;
         try {
-            URL url=new URL(apiUrl);
-            connection =(HttpURLConnection) url.openConnection();
+            URL url = new URL(apiUrl);
+            connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
             stream = connection.getInputStream();
 
-            JsonReader jsonReader = new JsonReader( new InputStreamReader(stream));
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(stream));
             Lesson[] lessons = gson.fromJson(jsonReader, Lesson[].class);
 
             String json = gson.toJson(lessons);
 
-            FileOutputStream outputStream = openFileOutput("JSON.json", Context.MODE_PRIVATE);
-            outputStream.write(json.getBytes());
-            outputStream.close();
-            jsonReader.close();
+            getSharedPreferences("ALLSCHEDULE", Context.MODE_PRIVATE)
+                    .edit()
+                    .putString("ALLSCHEDULE", json)
+                    .apply();
 
-        }
-        finally {
+//            FileOutputStream outputStream = openFileOutput("JSON.json", Context.MODE_PRIVATE);
+//            outputStream.write(json.getBytes());
+//            outputStream.close();
+//            jsonReader.close();
+
+        } finally {
             if (reader != null) {
                 reader.close();
             }
@@ -203,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void getFirstSchedule(){
+    public void getFirstSchedule() {
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -306,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
 
         super.onDestroy();
-        Log.d(LOG_TAG,"Завершён");
+        Log.d(LOG_TAG, "Завершён");
     }
 
 
@@ -323,9 +340,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    }
 
 
-
-    private boolean isFirstUse(){
-        this.sharedPreferences = getSharedPreferences(this.SETTINGS,Context.MODE_PRIVATE);
+    private boolean isFirstUse() {
+        this.sharedPreferences = getSharedPreferences(this.SETTINGS, Context.MODE_PRIVATE);
         return sharedPreferences.contains(this.FIRST_USE);
     }
 

@@ -28,7 +28,7 @@ public class Pair implements Serializable {
                 String _class_name,
                 String _week_type
     ) {
-        this.group_name = _group_name.substring(1,5);
+        this.group_name = _group_name.substring(1);
         switch(_weekday){
             case "Понедельник":
                 this.weekday=0;
@@ -49,7 +49,12 @@ public class Pair implements Serializable {
                 this.weekday=5;
                 break;
         }
-        this.pair_start_time = _pair_start_time;
+        if(_pair_start_time.length()==4){
+            this.pair_start_time = String.format("0%s",_pair_start_time);
+        }
+        else{
+            this.pair_start_time = _pair_start_time;
+        }
         this.pair_end_time = _pair_end_time;
         this.subject_name = String.format("%s(%s)",_subject_name,_pair_type.substring(0,3));
 
@@ -60,7 +65,7 @@ public class Pair implements Serializable {
     }
 
     public Pair(Lesson lesson){
-        this.group_name = lesson.getGroup_name().substring(1,5);
+        this.group_name = lesson.getGroup_name().substring(1);
         switch(lesson.weekday){
             case "Понедельник":
                 this.weekday=0;
@@ -81,7 +86,12 @@ public class Pair implements Serializable {
                 this.weekday=5;
                 break;
         }
-        this.pair_start_time = lesson.pair_start_time;
+        if(lesson.pair_start_time.length()==4){
+            this.pair_start_time = String.format("0%s",lesson.pair_start_time);
+        }
+        else{
+            this.pair_start_time = lesson.pair_start_time;
+        }
         this.pair_end_time = lesson.pair_end_time;
         this.subject_name = String.format("%s(%s)",lesson.subject_name,lesson.pair_type.substring(0,3));
 

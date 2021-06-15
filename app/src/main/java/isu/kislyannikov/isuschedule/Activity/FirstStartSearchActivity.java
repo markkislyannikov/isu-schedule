@@ -3,6 +3,7 @@ package isu.kislyannikov.isuschedule.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -27,17 +28,20 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import isu.kislyannikov.isuschedule.Model.AllSchedule;
 import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.MySchedule;
+import isu.kislyannikov.isuschedule.Model.Pair;
 import isu.kislyannikov.isuschedule.R;
 
 public class FirstStartSearchActivity extends Activity {
     String LOG_TAG = "<FIRST_START_SEARCH_ACTIVITY> ->>>>>>";
     String SETTINGS = "SETTINGS";
+    String ALLSCHEDULE = "ALLSCHEDULE";
     String FIRST_USE = "FIRST_USE";
     Gson gson = new Gson();
 
@@ -47,6 +51,7 @@ public class FirstStartSearchActivity extends Activity {
     ArrayList<String> stringArrayListKeys = new ArrayList<>();
     SearchView searchView;
     AllSchedule allSchedule;
+    Lesson [] lessons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,37 +59,48 @@ public class FirstStartSearchActivity extends Activity {
         setContentView(R.layout.activity_first_start_search);
         _context = this;
 
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            FileInputStream fileInputStream = openFileInput("JSON.json");
-            InputStreamReader isr = new InputStreamReader(fileInputStream);
-            Lesson [] lessons = gson.fromJson(isr,Lesson[].class);
-            allSchedule = new AllSchedule(lessons);
-            Log.d(LOG_TAG, lessons.toString());
-            isr.close();
-            fileInputStream.close();
-            } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SharedPreferences sharedPreferences = _context.getSharedPreferences(ALLSCHEDULE, Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString(ALLSCHEDULE, "");
+        lessons = gson.fromJson(json,Lesson[].class);
 
+    }
 
-        stringArrayListKeys = allSchedule.getKeys();
+    private void saveSettingsFirstStart() {
+        _context.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(FIRST_USE, true)
+                .apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         listViewStartActivity = findViewById(R.id.listViewStartActivity);
         searchView = findViewById(R.id.searchViewStartActivity);
+        allSchedule = new AllSchedule(lessons);
+        stringArrayListKeys = allSchedule.getKeys();
+
+        ArrayList<ArrayList<Pair>> arrayLists = allSchedule.getPairsByKey("Казимиров Алексей Сергеевич");
+//        ArrayList<ArrayList<Pair>> arrayLists = allSchedule.getPairsByKey("2341-ДБ");
+
+        int count=0;
+        for(ArrayList<Pair> alp: arrayLists){
+            System.out.println(count);
+            System.out.println("\n\n");
+            count++;
+            for(Pair pair: alp){
+                System.out.println(pair);
+            }
+        }
         listViewStartActivity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                String key = (String)arrayAdapter.getItem(position);
+                String key = (String) arrayAdapter.getItem(position);
                 try {
                     saveSettingsFirstStart();
-                    MySchedule mySchedule = new MySchedule(_context,allSchedule.getPairsByKey(key), key);
-                }
-                catch (NoSuchAlgorithmException e) {
+                    MySchedule mySchedule = new MySchedule(_context, allSchedule.getPairsByKey(key), key);
+                } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
                 Intent intent = new Intent(FirstStartSearchActivity.this, MainActivity.class);
@@ -107,13 +123,6 @@ public class FirstStartSearchActivity extends Activity {
                 return false;
             }
         });
-    }
 
-    private void saveSettingsFirstStart(){
-        _context.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
-                        .edit()
-                        .putBoolean(FIRST_USE, true)
-                        .apply();
     }
-
 }
