@@ -11,4 +11,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="isu_blue">#405BAA</color>
     <color name="bottom_nav_white_inactive">#C2FFFFFF</color>
+    <color name="color_selected">#C2FAED04</color>
 </resources>

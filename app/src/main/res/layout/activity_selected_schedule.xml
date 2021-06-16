@@ -5,34 +5,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.MainActivity">
+    tools:context=".Activity.SelectedSchedulActivity">
+
     <TextView
         android:id="@+id/mainTextView"
-        android:textSize="16dp"
-        android:textColor="@color/isu_blue"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:text="Вид недели, чётная-нечётная" />
+        android:text="Вид недели, чётная-нечётная"
+        android:textColor="@color/isu_blue"
+        android:textSize="16dp" />
 
     <LinearLayout
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:textSize="15dp"
-        android:paddingBottom="8dp"
         android:id="@+id/linearLayoutMainActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/mainTextView"
         android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
 
-        android:orientation="horizontal">
+        android:textSize="15dp">
 
         <TextView
             android:id="@+id/monday_number"
@@ -51,15 +52,15 @@
             android:layout_weight="0.3" />
 
         <TextView
-            android:textColor="@drawable/selector_schedule_days"
-            android:textSize="15dp"
+            android:id="@+id/tuesday_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/tuesday_number"
             android:layout_weight="1"
             android:background="@drawable/selector_schedule_days"
             android:gravity="center_horizontal|center_vertical"
-            android:text="Вт\n15" />
+            android:text="Вт\n15"
+            android:textColor="@drawable/selector_schedule_days"
+            android:textSize="15dp" />
 
         <Space
             android:layout_width="0dp"
@@ -68,16 +69,16 @@
 
 
         <TextView
-            android:textColor="@drawable/selector_schedule_days"
-            android:textSize="15dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:id="@+id/wednesday_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:background="@drawable/selector_schedule_days"
             android:gravity="center"
-            android:text="Ср\n16" />
+            android:text="Ср\n16"
+            android:textColor="@drawable/selector_schedule_days"
+            android:textSize="15dp" />
 
         <Space
             android:layout_width="0dp"
@@ -86,16 +87,16 @@
 
 
         <TextView
-            android:textColor="@drawable/selector_schedule_days"
-            android:textSize="15dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:id="@+id/thursday_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:background="@drawable/selector_schedule_days"
             android:gravity="center"
-            android:text="Чт\n17" />
+            android:text="Чт\n17"
+            android:textColor="@drawable/selector_schedule_days"
+            android:textSize="15dp" />
 
         <Space
             android:layout_width="0dp"
@@ -104,16 +105,16 @@
 
 
         <TextView
-            android:textColor="@drawable/selector_schedule_days"
-            android:textSize="15dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:id="@+id/friday_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:background="@drawable/selector_schedule_days"
             android:gravity="center"
-            android:text="Пт\n18" />
+            android:text="Пт\n18"
+            android:textColor="@drawable/selector_schedule_days"
+            android:textSize="15dp" />
 
         <Space
             android:layout_width="0dp"
@@ -121,38 +122,27 @@
             android:layout_weight="0.3" />
 
         <TextView
-            android:textColor="@drawable/selector_schedule_days"
-            android:textSize="15dp"
+            android:id="@+id/saturday_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/saturday_number"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:background="@drawable/selector_schedule_days"
             android:gravity="center"
-            android:text="Сб\n19" />
+            android:text="Сб\n19"
+            android:textColor="@drawable/selector_schedule_days"
+            android:textSize="15dp" />
     </LinearLayout>
 
 
     <ListView
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:id="@+id/listViewMainActivity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/bottomNavView"
-        android:layout_below="@id/linearLayoutMainActivity" />
-
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/isu_blue"
-        app:itemIconTint="@drawable/selector_bottom_nav_view"
-        app:itemTextColor="@drawable/selector_bottom_nav_view"
-        app:menu="@menu/menu_bottom_nav_view" />
-
-
+        android:layout_height="match_parent"
+        android:layout_below="@id/linearLayoutMainActivity"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="-1dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="1dp" />
 </RelativeLayout>

@@ -17,20 +17,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 
 import isu.kislyannikov.isuschedule.Adapter.ScheduleAdapter;
@@ -53,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     MySchedule mySchedule;
     ArrayList<TextView> textViewList;
     int typeOfWeek;
-
     ListView listView;
     ArrayList<ArrayList<Pair>> arrayListArrayListPair;
     ScheduleAdapter scheduleAdapter;
@@ -62,13 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        getFirstSchedule();
+        getFirstSchedule();
 
 
         if (!isFirstUse()) {
             getTypeWeekSchedule();
             getFirstSchedule();
-            Log.d(LOG_TAG, "dont has schedule");
             Intent intent = new Intent(MainActivity.this, FirstStartSearchActivity.class);
             startActivity(intent);
         } else {
@@ -82,10 +73,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             TextView tvTypeOfWeek = findViewById(R.id.mainTextView);
             tvTypeOfWeek.setText(String.format("%s неделя", typeOfWeek==0? "Верхняя":"Нижняя"));
 
-            ArrayList<Pair> alp = arrayListArrayListPair.get(0);
-            for(Pair p: alp){
-                System.out.println(p);
-            }
+
+            setTitle(mySchedule.getKey());
 
             int dayOfWeek = dayOfWeekSchedule();
             textViewList = new ArrayList<>();
@@ -110,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textViewList.get(i).setOnClickListener(this);
 
             }
-
             Log.d(LOG_TAG, "Create");
 
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
@@ -171,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.searchItemActivity:
-                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                        startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
 
@@ -216,10 +205,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .putString("ALLSCHEDULE", json)
                     .apply();
 
-//            FileOutputStream outputStream = openFileOutput("JSON.json", Context.MODE_PRIVATE);
-//            outputStream.write(json.getBytes());
-//            outputStream.close();
-//            jsonReader.close();
 
         } finally {
             if (reader != null) {

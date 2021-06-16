@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -17,6 +20,7 @@ import isu.kislyannikov.isuschedule.Model.SelectedSchedule;
 import isu.kislyannikov.isuschedule.R;
 
 public class SelectedActivity extends AppCompatActivity {
+    String LOG_TAG = "SELECTEDACTIVITY";
     ListView listViewSelectedSchedules;
     ArrayAdapter arrayAdapter;
     ArrayList<String> stringArrayListSchedules;
@@ -33,10 +37,22 @@ public class SelectedActivity extends AppCompatActivity {
 
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stringArrayListSchedules);
         listViewSelectedSchedules.setAdapter(arrayAdapter);
+        listViewSelectedSchedules.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Log.d(LOG_TAG,(String)arrayAdapter.getItem(position));
+                Intent intent = new Intent(SelectedActivity.this, SelectedSchedulActivity.class);
+                intent.putExtra("keySchedule", (String)arrayAdapter.getItem(position));
+                intent.putExtra("activity", "SelectedActivity");
+                finish();
+                startActivity(intent);
+
+            }
+        });
+
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
-
         bottomNavigationView.setSelectedItemId(R.id.selectedItemActivity);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

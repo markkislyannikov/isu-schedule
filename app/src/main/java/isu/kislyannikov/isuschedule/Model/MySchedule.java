@@ -13,6 +13,8 @@ public class MySchedule {
     String key;
     String hashCode;
     ArrayList<ArrayList<Pair>> arrayListPair = new ArrayList<>();
+    ArrayList<Pair> arrayPair = new ArrayList<>();
+
     SharedPreferences sharedPreferences;
 
     String MY_SCHEDULE = "MYSCHEDULE";
@@ -45,6 +47,7 @@ public class MySchedule {
         arrayListPair = _pairArrayList;
 
         String jsonData = gson.toJson(arrayListPair);
+        System.out.println(jsonData);
         hashCode = generateHash(jsonData);
 
         _context.getSharedPreferences(MY_SCHEDULE, Context.MODE_PRIVATE)
@@ -56,11 +59,25 @@ public class MySchedule {
     }
 
     //Metod for check change and change schedule
-    public void changeSchedule(Context _context, ArrayList<ArrayList<Pair>> _pairArrayList) throws NoSuchAlgorithmException {
+    public boolean changeSchedule(Context _context, ArrayList<Pair> _pairArrayList) throws NoSuchAlgorithmException {
+
+        for(Pair p:_pairArrayList){
+            System.out.println(p);
+        }
+
+        System.out.println("\n\n\n\n\n");
+        for(ArrayList<Pair> ap:arrayListPair) {
+            System.out.println("\n");
+            for (Pair p : ap) {
+                System.out.println(p);
+            }
+        }
+
 
         String jsonNewLessons = gson.toJson(_pairArrayList);
         if (isChangedSchedule(jsonNewLessons)) {
-            arrayListPair = _pairArrayList;
+
+            arrayPair = _pairArrayList;
 
             _context.getSharedPreferences(MY_SCHEDULE, Context.MODE_PRIVATE)
                     .edit()
@@ -68,11 +85,19 @@ public class MySchedule {
                     .putString(MY_SCHEDULE_HASH, hashCode)
                     .putString(MY_SCHEDULE_KEY, key)
                     .apply();
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
     public ArrayList<ArrayList<Pair>> getMySchedule(){
         return this.arrayListPair;
+    }
+
+    public String getKey(){
+        return key;
     }
 
 

@@ -25,7 +25,6 @@ public class SelectedSchedule {
     private final String SELECTED_SCHEDULES_HASH = "SELECTSCHEDULESHASH";
 
     SharedPreferences sharedPreferences;
-    File file;
 
     TreeSet<String> keys;
     ArrayList<String> hash;
@@ -34,6 +33,8 @@ public class SelectedSchedule {
         sharedPreferences= context.getSharedPreferences(SELECTED_SCHEDULES, Context.MODE_PRIVATE);
         if(sharedPreferences.contains(SELECTED_SCHEDULES_KEYS)){
             keys = new TreeSet<>(sharedPreferences.getStringSet(SELECTED_SCHEDULES_KEYS, keys));
+        }else{
+            keys = new TreeSet<>();
         }
     }
 
@@ -51,6 +52,16 @@ public class SelectedSchedule {
                         .apply();
     }
 
+    public void deleteSelectedSchedule(String _key, Context _context){
+        if(keys.contains(_key)){
+            keys.remove(_key);
+            _context.getSharedPreferences(SELECTED_SCHEDULES, Context.MODE_PRIVATE)
+                    .edit()
+                    .putStringSet(SELECTED_SCHEDULES_KEYS, this.keys)
+                    .apply();
+        }
+    }
+
     public ArrayList<String> getScheduleKeys(){
         ArrayList<String> arrayListString;
         if(this.keys==null){
@@ -59,6 +70,14 @@ public class SelectedSchedule {
         }
         else {
             return new ArrayList<>(this.keys);
+        }
+    }
+
+    public boolean isKeySetInSelected(String _key){
+        if(keys.isEmpty()){
+            return false;
+        }else{
+            return keys.contains(_key);
         }
     }
 
