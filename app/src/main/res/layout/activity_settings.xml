@@ -6,12 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".Activity.SettingsActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_margin="16dp"
+        android:id="@+id/buttonNewSchedule"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="settings"
-        android:textSize="20sp"
-        android:layout_centerInParent="true"
+        android:text="Сменить расписание"
+        android:gravity="left|center"
         />
 
 

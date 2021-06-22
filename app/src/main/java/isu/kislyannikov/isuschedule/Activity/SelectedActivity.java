@@ -15,12 +15,14 @@ import android.widget.ListView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import isu.kislyannikov.isuschedule.Model.SelectedSchedule;
 import isu.kislyannikov.isuschedule.R;
 
 public class SelectedActivity extends AppCompatActivity {
     String LOG_TAG = "SELECTEDACTIVITY";
+    BottomNavigationView bottomNavigationView;
     ListView listViewSelectedSchedules;
     ArrayAdapter arrayAdapter;
     ArrayList<String> stringArrayListSchedules;
@@ -34,6 +36,7 @@ public class SelectedActivity extends AppCompatActivity {
 
         SelectedSchedule selectedSchedule = new SelectedSchedule(this);
         stringArrayListSchedules = selectedSchedule.getScheduleKeys();
+        Collections.sort(stringArrayListSchedules);
 
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stringArrayListSchedules);
         listViewSelectedSchedules.setAdapter(arrayAdapter);
@@ -41,7 +44,7 @@ public class SelectedActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Log.d(LOG_TAG,(String)arrayAdapter.getItem(position));
-                Intent intent = new Intent(SelectedActivity.this, SelectedSchedulActivity.class);
+                Intent intent = new Intent(SelectedActivity.this, SelectedScheduleActivity.class);
                 intent.putExtra("keySchedule", (String)arrayAdapter.getItem(position));
                 intent.putExtra("activity", "SelectedActivity");
                 finish();
@@ -49,9 +52,12 @@ public class SelectedActivity extends AppCompatActivity {
 
             }
         });
+        bottomNavigation();
+    }
 
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
+    private void bottomNavigation(){
+        bottomNavigationView = findViewById(R.id.bottomNavView);
         bottomNavigationView.setSelectedItemId(R.id.selectedItemActivity);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -70,13 +76,19 @@ public class SelectedActivity extends AppCompatActivity {
                     case R.id.selectedItemActivity:
                         return true;
 
-//                    case R.id.settingsItemActivity:
-//                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-//                        overridePendingTransition(0,0);
-//                        return true;
+                    case R.id.settingsItemActivity:
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
                 }
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.selectedItemActivity);
     }
 }

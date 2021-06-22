@@ -1,10 +1,20 @@
-package isu.kislyannikov.isuschedule.Metods;
+package isu.kislyannikov.isuschedule.Methods;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 
-public class HashMetods {
+public class HashMethods {
+    public static String generateHash(String data) throws NoSuchAlgorithmException {
+        String hashCode;
+
+        byte[] byteArray = data.getBytes();
+        byte[] byteHash  = MessageDigest.getInstance("SHA-256").digest(byteArray);
+
+        hashCode = HashMethods.bytesToHexString(byteHash);
+        return hashCode;
+    }
+
     public static String bytesToHexString(byte[] bytes) {
         StringBuilder stringBuilder = new StringBuilder(bytes.length * 2);
         Formatter formatter = new Formatter(stringBuilder);
@@ -13,16 +23,4 @@ public class HashMetods {
         }
         return stringBuilder.toString();
     }
-
-    public static String generateHash(String _data) throws NoSuchAlgorithmException {
-        String hashCode;
-
-        byte [] byteArray = _data.getBytes();
-        byte[] byteHash = MessageDigest.getInstance("SHA-256").digest(byteArray);
-
-        hashCode = HashMetods.bytesToHexString(byteHash);
-
-        return hashCode;
-    }
-
 }

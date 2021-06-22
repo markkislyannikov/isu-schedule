@@ -7,16 +7,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class TypeOfWeekJson {
+public class TypeOfWeek {
     String semester;
     String begin_date;
     String end_date;
     String begin_week;
 
-    public TypeOfWeekJson() {
+    public TypeOfWeek() {
 
     }
-    public TypeOfWeekJson(String semester, String begin_date, String end_date, String begin_week) {
+    public TypeOfWeek(String semester, String begin_date, String end_date, String begin_week) {
         this.semester = semester;
         this.begin_date = begin_date;
         this.end_date = end_date;
@@ -83,6 +83,19 @@ public class TypeOfWeekJson {
         }
     }
 
+    public static int[] getDaysOfTheWeek(){
+        int[] days = new int[6];
+        Date date = new Date();
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        if((calendar.get(Calendar.DAY_OF_WEEK)+5)%7==6){
+            calendar.roll(Calendar.DAY_OF_MONTH, 1);
+        }
+        for(int i=0; i<days.length; i++){
+            days[i] = calendar.get(Calendar.DAY_OF_MONTH);
+            calendar.roll(Calendar.DAY_OF_MONTH, 1);
+        }
 
-
+        return days;
+    }
 }

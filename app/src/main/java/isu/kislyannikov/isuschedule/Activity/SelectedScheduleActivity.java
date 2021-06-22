@@ -2,9 +2,7 @@ package isu.kislyannikov.isuschedule.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,18 +19,18 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-import isu.kislyannikov.isuschedule.Adapter.ScheduleAdapter;
 import isu.kislyannikov.isuschedule.Adapter.SelectorAdapter;
 import isu.kislyannikov.isuschedule.Model.AllSchedule;
 import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.Pair;
 import isu.kislyannikov.isuschedule.Model.SelectedSchedule;
-import isu.kislyannikov.isuschedule.Model.TypeOfWeekJson;
+import isu.kislyannikov.isuschedule.Model.TypeOfWeek;
 import isu.kislyannikov.isuschedule.R;
 
 import static isu.kislyannikov.isuschedule.Model.AllSchedule.dayOfWeekSchedule;
+import static isu.kislyannikov.isuschedule.Model.TypeOfWeek.getDaysOfTheWeek;
 
-public class SelectedSchedulActivity extends AppCompatActivity implements View.OnClickListener {
+public class SelectedScheduleActivity extends AppCompatActivity implements View.OnClickListener {
     String TYPEOFWEEK = "TYPEOFWEEK";
     Gson gson = new Gson();
     SharedPreferences sharedPreferences;
@@ -47,6 +44,7 @@ public class SelectedSchedulActivity extends AppCompatActivity implements View.O
     SelectorAdapter selectorAdapter;
     String key;
     String pastActivity;
+    String[] days = {"Пн", "Вт", "Ср", "Чт", "Пн", "Сб"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +60,8 @@ public class SelectedSchedulActivity extends AppCompatActivity implements View.O
 //            System.out.println(lessons[i]);
 //        }
         AllSchedule allSchedule = new AllSchedule(lessons);
+
+
 
 
         _context = this;
@@ -113,6 +113,12 @@ public class SelectedSchedulActivity extends AppCompatActivity implements View.O
         textViewList.add(findViewById(R.id.thursday_number));
         textViewList.add(findViewById(R.id.friday_number));
         textViewList.add(findViewById(R.id.saturday_number));
+
+
+        int[] daysOfTheWeek = getDaysOfTheWeek();
+        for (int i = 0; i < daysOfTheWeek.length; i++) {
+            textViewList.get(i).setText(String.format("%s\n%s",days[i],daysOfTheWeek[i]));
+        }
 
         selectorAdapter = new SelectorAdapter(this, pairArrayList.get(dayOfWeek), this.typeOfWeek);
         listView.setAdapter(selectorAdapter);
@@ -173,8 +179,6 @@ public class SelectedSchedulActivity extends AppCompatActivity implements View.O
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar_icon, menu);
-
-
         return true;
     }
 
@@ -218,23 +222,22 @@ public class SelectedSchedulActivity extends AppCompatActivity implements View.O
         Gson gson = new Gson();
         this.sharedPreferences = getSharedPreferences(TYPEOFWEEK, Context.MODE_PRIVATE);
         String json = sharedPreferences.getString(TYPEOFWEEK, "");
-        TypeOfWeekJson typeOfWeekJson = gson.fromJson(json,TypeOfWeekJson.class);
-        return typeOfWeekJson.typeOfWeek();
+        TypeOfWeek typeOfWeek = gson.fromJson(json, TypeOfWeek.class);
+        return typeOfWeek.typeOfWeek();
     }
 
     @Override
     public void onBackPressed() {
-        if(pastActivity!=null && pastActivity.equals("SelectedActivity")) {
+        if (pastActivity != null && pastActivity.equals("SelectedActivity")) {
             Intent intent = new Intent(this, SelectedActivity.class);
             finish();
             this.startActivity(intent);
-        }
-        else{
+        } else {
             System.out.println("nen");
             Intent intent = new Intent(this, SearchActivity.class);
             finish();
             this.startActivity(intent);
         }
-
     }
+
 }

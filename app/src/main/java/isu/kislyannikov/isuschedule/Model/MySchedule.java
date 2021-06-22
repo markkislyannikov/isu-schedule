@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import static isu.kislyannikov.isuschedule.Metods.HashMetods.generateHash;
+import static isu.kislyannikov.isuschedule.Methods.HashMethods.generateHash;
 
 public class MySchedule {
     Gson gson = new Gson();
@@ -64,7 +64,6 @@ public class MySchedule {
         for(Pair p:_pairArrayList){
             System.out.println(p);
         }
-
         System.out.println("\n\n\n\n\n");
         for(ArrayList<Pair> ap:arrayListPair) {
             System.out.println("\n");

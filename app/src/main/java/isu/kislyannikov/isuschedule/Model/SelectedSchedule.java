@@ -10,10 +10,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
-//Set<String> keys = new TreeSet<>();
-//        SharedPreferences sharedPreferences = getSharedPreferences("MY_SCHEDULE", MODE_PRIVATE);
-//        keys = sharedPreferences.getStringSet("MY_SCHEDULE_KEY",keys);
-
 public class SelectedSchedule {
     //name file and name SharedPreferense file
     private final String SELECTED_SCHEDULES = "SELECTEDSCHEDULES";

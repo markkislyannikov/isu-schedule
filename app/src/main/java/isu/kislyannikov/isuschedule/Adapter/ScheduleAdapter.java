@@ -13,7 +13,7 @@ import isu.kislyannikov.isuschedule.Model.Pair;
 import isu.kislyannikov.isuschedule.R;
 
 public class ScheduleAdapter extends BaseAdapter implements Filterable {
-    private Context context;
+    private final Context context;
     ArrayList<Pair>  arrayListPair;
     ArrayList<Pair> pairArrayList;
     private LayoutInflater inflater;
@@ -21,13 +21,14 @@ public class ScheduleAdapter extends BaseAdapter implements Filterable {
 
     ArrayList<Pair> mValue;
     ValueFilter valueFilter;
-
-    public ScheduleAdapter(Context _context, ArrayList<Pair> _arrayListPair, int day, int typeOfWeek){
+    public ScheduleAdapter(Context _context, ArrayList<Pair> _arrayListPair, int day, int _typeOfWeek){
         this.context = _context;
         this.arrayListPair = _arrayListPair;
+        this.typeOfWeek = _typeOfWeek;
         mValue = new ArrayList<>();
         for(int i=0; i<arrayListPair.size(); i++){
-            if(arrayListPair.get(i).weekday==day && (arrayListPair.get(i).week_type==typeOfWeek || arrayListPair.get(i).week_type==2)){
+            if(arrayListPair.get(i).weekday==day &&
+                    (arrayListPair.get(i).week_type==typeOfWeek || arrayListPair.get(i).week_type==2)){
                 mValue.add(arrayListPair.get(i));
             }
         }
@@ -77,12 +78,6 @@ public class ScheduleAdapter extends BaseAdapter implements Filterable {
         textViewLocaltion.setText(txtLocaltion);
         textViewTeacher.setText(txtTeacher);
         textViewSubject.setText(txtSubject);
-
-//        textViewStartTime.setText("8:30");
-//        textViewEndTime.setText("10:30");
-//        textViewLocaltion.setText("320");
-//        textViewTeacher.setText("Зубков Олег Владимирович");
-//        textViewSubject.setText("Олимпиадное программирование");
         return convertView;
     }
 

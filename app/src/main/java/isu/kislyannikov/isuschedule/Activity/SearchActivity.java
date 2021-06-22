@@ -18,12 +18,11 @@ import android.widget.SearchView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import isu.kislyannikov.isuschedule.Model.AllSchedule;
 import isu.kislyannikov.isuschedule.Model.Lesson;
-import isu.kislyannikov.isuschedule.Model.SelectedSchedule;
 import isu.kislyannikov.isuschedule.R;
 
 public class SearchActivity extends Activity {
@@ -31,11 +30,12 @@ public class SearchActivity extends Activity {
 
     Gson gson = new Gson();
     SharedPreferences sharedPreferences;
+    BottomNavigationView bottomNavigationView;
     AllSchedule allSchedule;
     Context _context;
     ListView listViewKeys;
     ArrayAdapter arrayAdapter;
-    ArrayList<String> stringArrayList= new ArrayList<>();
+    ArrayList<String> stringArrayListKeys = new ArrayList<>();
     SearchView searchView;
 
     @Override
@@ -45,29 +45,19 @@ public class SearchActivity extends Activity {
 
         sharedPreferences= getSharedPreferences("ALLSCHEDULE", Context.MODE_PRIVATE);
         String json = sharedPreferences.getString("ALLSCHEDULE","");
-
+        Lesson[] lessons = gson.fromJson(json, Lesson[].class);
+        allSchedule = new AllSchedule(lessons);
+        stringArrayListKeys = allSchedule.getKeys();
+        Collections.sort(stringArrayListKeys);
 
         _context = this;
 
         listViewKeys = findViewById(R.id.listViewSearch);
+
         searchView = (SearchView)findViewById(R.id.searchView);
-        listViewKeys.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Log.d(LOG_TAG,(String)arrayAdapter.getItem(position));
-                Intent intent = new Intent(SearchActivity.this, SelectedSchedulActivity.class);
-                intent.putExtra("keySchedule", (String)arrayAdapter.getItem(position));
-                finish();
-                startActivity(intent);
-            }
-        });
-
-        Lesson[] lessons = gson.fromJson(json, Lesson[].class);
-        AllSchedule allSchedule = new AllSchedule(lessons);
-        stringArrayList= allSchedule.getKeys();
 
 
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stringArrayList);
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stringArrayListKeys);
         listViewKeys.setAdapter(arrayAdapter);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -82,15 +72,28 @@ public class SearchActivity extends Activity {
             }
         });
 
+        listViewKeys.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Log.d(LOG_TAG,(String)arrayAdapter.getItem(position));
+                Intent intent = new Intent(SearchActivity.this, SelectedScheduleActivity.class);
+                intent.putExtra("keySchedule", (String)arrayAdapter.getItem(position));
+                startActivity(intent);
+            }
+        });
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
+        bottomNavigation();
+    }
+
+    private void bottomNavigation(){
+        bottomNavigationView = findViewById(R.id.bottomNavView);
         bottomNavigationView.setSelectedItemId(R.id.searchItemActivity);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.searchItemActivity:Activity:
-                        return true;
+                    return true;
 
                     case R.id.scheduleItemActivity:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -103,15 +106,21 @@ public class SearchActivity extends Activity {
                         overridePendingTransition(0, 0);
                         return true;
 
-//                    case R.id.settingsItemActivity:
-//                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-//                        overridePendingTransition(0, 0);
-//                        finishAfterTransition();
-//                        return true;
+                    case R.id.settingsItemActivity:
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
                 }
                 return false;
             }
         });
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.searchItemActivity);
     }
 
 }

@@ -15,9 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ISUSchedule"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.SelectedSchedulActivity"></activity>
+        <activity android:name=".Activity.SelectedScheduleActivity"></activity>
         <activity android:name=".Activity.FirstStartSearchActivity" />
-        <activity android:name=".Activity.StartActivtity" />
         <activity
             android:name=".Activity.SelectedActivity"
             android:label="Избранное" />

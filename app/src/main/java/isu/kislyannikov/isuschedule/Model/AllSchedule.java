@@ -78,9 +78,20 @@ public class AllSchedule {
         return dayOfWeek == 6 ? 0 : dayOfWeek;
     }
 
+    public static int dayStartOfWeek() {
+        Calendar c = Calendar.getInstance();
+        java.util.Date date = new java.util.Date();
+        c.setTime(date);
+        int dayStart = (c.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+
+        return dayStart == 6 ? 0 : dayStart;
+    }
+
+
     public ArrayList<ArrayList<Pair>> getPairsByKey(String key) {
         return stringLessonMap.get(key);
     }
+
 
     public ArrayList<String> getKeys() {
         ArrayList<String> stringArrayList = new ArrayList<>();
@@ -100,6 +111,4 @@ public class AllSchedule {
         }
         return output;
     }
-
-
 }

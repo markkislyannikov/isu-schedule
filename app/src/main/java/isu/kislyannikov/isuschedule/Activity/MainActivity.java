@@ -30,10 +30,11 @@ import isu.kislyannikov.isuschedule.Adapter.ScheduleAdapter;
 import isu.kislyannikov.isuschedule.Model.Lesson;
 import isu.kislyannikov.isuschedule.Model.MySchedule;
 import isu.kislyannikov.isuschedule.Model.Pair;
-import isu.kislyannikov.isuschedule.Model.TypeOfWeekJson;
+import isu.kislyannikov.isuschedule.Model.TypeOfWeek;
 import isu.kislyannikov.isuschedule.R;
 
 import static isu.kislyannikov.isuschedule.Model.AllSchedule.dayOfWeekSchedule;
+import static isu.kislyannikov.isuschedule.Model.TypeOfWeek.getDaysOfTheWeek;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     String LOG_TAG = "<MAIN_ACTIVITY> ->>>>>>";
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String MYSCHEDULE = "MYSCHEDULE";
     String myFavorites = "MYFAVORITES";
     String TYPEOFWEEK = "TYPEOFWEEK";
+    String[] days = {"Пн", "Вт", "Ср", "Чт", "Пн", "Сб"};
+
     SharedPreferences sharedPreferences;
     MySchedule mySchedule;
     ArrayList<TextView> textViewList;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ListView listView;
     ArrayList<ArrayList<Pair>> arrayListArrayListPair;
     ScheduleAdapter scheduleAdapter;
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,55 +66,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getFirstSchedule();
             Intent intent = new Intent(MainActivity.this, FirstStartSearchActivity.class);
             startActivity(intent);
-        } else {
-            mySchedule = new MySchedule(this);
-            arrayListArrayListPair = mySchedule.getMySchedule();
-
-            listView = findViewById(R.id.listViewMainActivity);
-
-            this.typeOfWeek = typeOfWeek();
-
-            TextView tvTypeOfWeek = findViewById(R.id.mainTextView);
-            tvTypeOfWeek.setText(String.format("%s неделя", typeOfWeek==0? "Верхняя":"Нижняя"));
-
-
-            setTitle(mySchedule.getKey());
-
-            int dayOfWeek = dayOfWeekSchedule();
-            textViewList = new ArrayList<>();
-            textViewList.add(findViewById(R.id.monday_number));
-            textViewList.add(findViewById(R.id.tuesday_number));
-            textViewList.add(findViewById(R.id.wednesday_number));
-            textViewList.add(findViewById(R.id.thursday_number));
-            textViewList.add(findViewById(R.id.friday_number));
-            textViewList.add(findViewById(R.id.saturday_number));
-
-            scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), dayOfWeek, this.typeOfWeek);
-            listView.setAdapter(scheduleAdapter);
-
-            for (int i = 0; i < textViewList.size(); i++) {
-                textViewList.get(i).setSelected(false);
-                textViewList.get(i).setActivated(false);
-                if (i == dayOfWeek) {
-//                тут будет загрузка раписания в list
-                    textViewList.get(i).setActivated(true);
-                    textViewList.get(i).setSelected(true);
-                }
-                textViewList.get(i).setOnClickListener(this);
-
-            }
-            Log.d(LOG_TAG, "Create");
-
-            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
-            setBottomNavigationView(bottomNavigationView);
         }
-    }
+        mySchedule = new MySchedule(this);
+        arrayListArrayListPair = mySchedule.getMySchedule();
+
+        listView = findViewById(R.id.listViewMainActivity);
+
+        this.typeOfWeek = typeOfWeek();
+
+        TextView tvTypeOfWeek = findViewById(R.id.mainTextView);
+        tvTypeOfWeek.setText(String.format("%s неделя", typeOfWeek == 0 ? "Верхняя" : "Нижняя"));
 
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
+        setTitle(mySchedule.getKey());
+
+        int dayOfWeek = dayOfWeekSchedule();
+        textViewList = new ArrayList<>();
+
+        textViewList.add(findViewById(R.id.monday_number));
+        textViewList.add(findViewById(R.id.tuesday_number));
+        textViewList.add(findViewById(R.id.wednesday_number));
+        textViewList.add(findViewById(R.id.thursday_number));
+        textViewList.add(findViewById(R.id.friday_number));
+        textViewList.add(findViewById(R.id.saturday_number));
+
+        int[] daysOfTheWeek = getDaysOfTheWeek();
+        for (int i = 0; i < daysOfTheWeek.length; i++) {
+            textViewList.get(i).setText(String.format("%s\n%s",days[i],daysOfTheWeek[i]));
+        }
+
+
+
+        scheduleAdapter = new ScheduleAdapter(this, arrayListArrayListPair.get(0), dayOfWeek, this.typeOfWeek);
+        listView.setAdapter(scheduleAdapter);
+
+        for (int i = 0; i < textViewList.size(); i++) {
+            textViewList.get(i).setSelected(false);
+            textViewList.get(i).setActivated(false);
+            if (i == dayOfWeek) {
+//                тут будет загрузка раписания в list
+                textViewList.get(i).setActivated(true);
+                textViewList.get(i).setSelected(true);
+            }
+            textViewList.get(i).setOnClickListener(this);
+
+        }
+        Log.d(LOG_TAG, "Create");
+
+        bottomNavigationView = findViewById(R.id.bottomNavView);
+        setBottomNavigationView(bottomNavigationView);
+
     }
+
 
     public void onClick(View view) {
         int day = 7;
@@ -166,20 +173,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     case R.id.scheduleItemActivity:
                         return true;
+
                     case R.id.selectedItemActivity:
                         startActivity(new Intent(getApplicationContext(), SelectedActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
 
-//                    case R.id.settingsItemActivity:
-//                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-//                        overridePendingTransition(0,0);
-//                        finishAfterTransition();
-//                        return true;
+                    case R.id.settingsItemActivity:
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                        overridePendingTransition(0, 0);
+
+                        return true;
                 }
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.scheduleItemActivity);
     }
 
     public void getContent(String apiUrl) throws IOException {
@@ -243,9 +257,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     InputStream stream = connection.getInputStream();
 
                     JsonReader jsonReader = new JsonReader(new InputStreamReader(stream));
-                    TypeOfWeekJson[] typeOfWeekJsons = gson.fromJson(jsonReader, TypeOfWeekJson[].class);
+                    TypeOfWeek[] typeOfWeeks = gson.fromJson(jsonReader, TypeOfWeek[].class);
 
-                    String json = gson.toJson(typeOfWeekJsons[0]);
+                    String json = gson.toJson(typeOfWeeks[0]);
 
                     getSharedPreferences("TYPEOFWEEK", Context.MODE_PRIVATE)
                             .edit()
@@ -285,12 +299,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }).start();
 //    }
 
-    private int typeOfWeek(){
+    private int typeOfWeek() {
         Gson gson = new Gson();
         this.sharedPreferences = getSharedPreferences(TYPEOFWEEK, Context.MODE_PRIVATE);
         String json = sharedPreferences.getString(TYPEOFWEEK, "");
-        TypeOfWeekJson typeOfWeekJson = gson.fromJson(json,TypeOfWeekJson.class);
-        return typeOfWeekJson.typeOfWeek();
+        TypeOfWeek typeOfWeek = gson.fromJson(json, TypeOfWeek.class);
+        return typeOfWeek.typeOfWeek();
     }
 
     private boolean isFirstUse() {
