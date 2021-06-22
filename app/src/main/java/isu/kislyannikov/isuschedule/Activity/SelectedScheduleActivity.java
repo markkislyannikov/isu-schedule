@@ -52,7 +52,6 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
         setContentView(R.layout.activity_selected_schedule);
 
 
-
         sharedPreferences = getSharedPreferences("ALLSCHEDULE", Context.MODE_PRIVATE);
         String json = sharedPreferences.getString("ALLSCHEDULE", "");
         Lesson[] lessons = gson.fromJson(json, Lesson[].class);
@@ -62,30 +61,26 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
         AllSchedule allSchedule = new AllSchedule(lessons);
 
 
-
-
         _context = this;
         selectedSchedule = new SelectedSchedule(this);
         key = (String) getIntent().getSerializableExtra("keySchedule");
-        pastActivity= (String)getIntent().getSerializableExtra("activity");
+        pastActivity = (String) getIntent().getSerializableExtra("activity");
         System.out.println(pastActivity);
 
         Log.d("LOG->>>>>>>>>>>>>>>", key);
 
 
-
         select = selectedSchedule.isKeySetInSelected(key);
 
 
-        int count=0;
-        for(ArrayList<Pair> lp:  allSchedule.getPairsByKey(key)){
+        int count = 0;
+        for (ArrayList<Pair> lp : allSchedule.getPairsByKey(key)) {
             System.out.println(count);
-            for(Pair p:  lp){
+            for (Pair p : lp) {
                 System.out.println(p);
             }
             count++;
         }
-
 
 
 //        for(ArrayList<Pair> lp:  allSchedule.getPairsByKey(key)){
@@ -117,7 +112,7 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
 
         int[] daysOfTheWeek = getDaysOfTheWeek();
         for (int i = 0; i < daysOfTheWeek.length; i++) {
-            textViewList.get(i).setText(String.format("%s\n%s",days[i],daysOfTheWeek[i]));
+            textViewList.get(i).setText(String.format("%s\n%s", days[i], daysOfTheWeek[i]));
         }
 
         selectorAdapter = new SelectorAdapter(this, pairArrayList.get(dayOfWeek), this.typeOfWeek);
@@ -134,6 +129,7 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
             textViewList.get(i).setOnClickListener(this);
         }
     }
+
     @Override
     protected void onPostResume() {
         super.onPostResume();
@@ -164,7 +160,7 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
         }
 
         CharSequence charSequence = Integer.toString(day);
-        selectorAdapter = new SelectorAdapter(_context, pairArrayList.get(day),typeOfWeek);
+        selectorAdapter = new SelectorAdapter(_context, pairArrayList.get(day), typeOfWeek);
         listView.setAdapter(selectorAdapter);
 
         selectorAdapter.getFilter().filter(charSequence);
@@ -176,6 +172,7 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
             }
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar_icon, menu);
@@ -197,9 +194,9 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Toast toast;
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_select:
-                select =!select;
+                select = !select;
                 selectedSchedule.deleteSelectedSchedule(key, _context);
                 toast = Toast.makeText(getApplicationContext(),
                         "Удалено!", Toast.LENGTH_SHORT);
@@ -207,7 +204,7 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
                 invalidateOptionsMenu();
                 break;
             case R.id.noaction_select:
-                select =!select;
+                select = !select;
                 selectedSchedule.addSchedule(key, _context);
                 toast = Toast.makeText(getApplicationContext(),
                         "Раписание добавлено!", Toast.LENGTH_SHORT);
@@ -218,7 +215,7 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
         return super.onOptionsItemSelected(item);
     }
 
-    private int typeOfWeek(){
+    private int typeOfWeek() {
         Gson gson = new Gson();
         this.sharedPreferences = getSharedPreferences(TYPEOFWEEK, Context.MODE_PRIVATE);
         String json = sharedPreferences.getString(TYPEOFWEEK, "");

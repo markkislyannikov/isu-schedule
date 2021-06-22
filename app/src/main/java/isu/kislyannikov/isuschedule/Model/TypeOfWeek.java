@@ -16,6 +16,7 @@ public class TypeOfWeek {
     public TypeOfWeek() {
 
     }
+
     public TypeOfWeek(String semester, String begin_date, String end_date, String begin_week) {
         this.semester = semester;
         this.begin_date = begin_date;
@@ -55,13 +56,13 @@ public class TypeOfWeek {
         this.begin_week = begin_week;
     }
 
-    public int typeOfWeek(){
+    public int typeOfWeek() {
         Date now = new Date();
         Date first = new Date();
         int nowTypeOfDate;
         int firstTypeOfDate;
 
-        int typeOfStart = this.begin_week.equals("верхняя")? 0 : 1;
+        int typeOfStart = this.begin_week.equals("верхняя") ? 0 : 1;
 
         GregorianCalendar calendar = new GregorianCalendar();
         DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
@@ -75,27 +76,30 @@ public class TypeOfWeek {
         calendar.setTimeInMillis(now.getTime());
         nowTypeOfDate = calendar.get(Calendar.WEEK_OF_YEAR);
 
-        if(firstTypeOfDate%2==nowTypeOfDate%2){
+        if (firstTypeOfDate % 2 == nowTypeOfDate % 2) {
             return typeOfStart;
-        }
-        else{
-            return (typeOfStart+1)%2;
+        } else {
+            return (typeOfStart + 1) % 2;
         }
     }
 
-    public static int[] getDaysOfTheWeek(){
+    public static int[] getDaysOfTheWeek() {
         int[] days = new int[6];
         Date date = new Date();
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        if((calendar.get(Calendar.DAY_OF_WEEK)+5)%7==6){
+
+        int day = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+        if (day == 6) {
             calendar.roll(Calendar.DAY_OF_MONTH, 1);
+        } else {
+            calendar.roll(Calendar.DAY_OF_MONTH, -day);
         }
-        for(int i=0; i<days.length; i++){
+
+        for (int i = 0; i < days.length; i++) {
             days[i] = calendar.get(Calendar.DAY_OF_MONTH);
             calendar.roll(Calendar.DAY_OF_MONTH, 1);
         }
-
         return days;
     }
 }
