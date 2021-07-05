@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String MYSCHEDULE = "MYSCHEDULE";
     String myFavorites = "MYFAVORITES";
     String TYPEOFWEEK = "TYPEOFWEEK";
-    String[] days = {"Пн", "Вт", "Ср", "Чт", "Пн", "Сб"};
+    String[] days = {"Пн", "Вт", "Ср", "Чт", "Пт", "Сб"};
 
     SharedPreferences sharedPreferences;
     MySchedule mySchedule;

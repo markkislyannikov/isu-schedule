@@ -71,6 +71,14 @@ public class TypeOfWeek {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        int numberOfDay = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+
+        if (numberOfDay == 6) {
+            calendar.roll(Calendar.DAY_OF_YEAR, 1);
+        }
+
+
         calendar.setTimeInMillis(first.getTime());
         firstTypeOfDate = calendar.get(Calendar.WEEK_OF_YEAR);
         calendar.setTimeInMillis(now.getTime());
@@ -85,20 +93,22 @@ public class TypeOfWeek {
 
     public static int[] getDaysOfTheWeek() {
         int[] days = new int[6];
+
         Date date = new Date();
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(date);
 
-        int day = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7;
-        if (day == 6) {
-            calendar.roll(Calendar.DAY_OF_MONTH, 1);
+        int numberOfDay = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+
+        if (numberOfDay == 6) {
+            calendar.roll(Calendar.DAY_OF_YEAR, 1);
         } else {
-            calendar.roll(Calendar.DAY_OF_MONTH, -day);
+            calendar.roll(Calendar.DAY_OF_YEAR, -numberOfDay);
         }
 
         for (int i = 0; i < days.length; i++) {
             days[i] = calendar.get(Calendar.DAY_OF_MONTH);
-            calendar.roll(Calendar.DAY_OF_MONTH, 1);
+            calendar.roll(Calendar.DAY_OF_YEAR, 1);
         }
         return days;
     }

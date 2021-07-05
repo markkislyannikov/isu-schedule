@@ -44,13 +44,12 @@ public class SelectedScheduleActivity extends AppCompatActivity implements View.
     SelectorAdapter selectorAdapter;
     String key;
     String pastActivity;
-    String[] days = {"Пн", "Вт", "Ср", "Чт", "Пн", "Сб"};
+    String[] days = {"Пн", "Вт", "Ср", "Чт", "Пт", "Сб"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_schedule);
-
 
         sharedPreferences = getSharedPreferences("ALLSCHEDULE", Context.MODE_PRIVATE);
         String json = sharedPreferences.getString("ALLSCHEDULE", "");
